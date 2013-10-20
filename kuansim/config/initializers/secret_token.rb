@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Kuansim::Application.config.secret_token = '7eda75e645b846d5baf3368341b79b5468529b44cf8ef2fe4952259a1511772c9262c3546a5003003b841ab97cec55d6a448d2574fe83fccc2a79c8d682e9114'
+Kuansim::Application.config.secret_token = 'd1e0ec9fc68267ae23ad587e271e0fee141a506e16a5fe7a5771f610229f9e8a91cf41edba1ce0b9a6d6d4d3f6548382c97edc60e045ac260488852547d68521'
