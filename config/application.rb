@@ -56,8 +56,6 @@ module Kuansim
     # Enable the asset pipeline
     config.assets.enabled = true
 
-    config.assets.path << "#{Rails.root}/app/assets/stylesheets"
-
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
   end
