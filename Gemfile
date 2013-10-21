@@ -6,8 +6,6 @@ ruby '1.9.3'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'pg'
-
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -24,6 +22,7 @@ end
 gem 'jquery-rails'
 
 group :development, :test do
+  gem 'sqlite3'
 	gem 'ruby-debug19'
 	gem 'database_cleaner'
 	gem 'capybara'
@@ -34,6 +33,10 @@ end
 group :test do
   gem 'cucumber-rails'
   gem 'cucumber-rails-training-wheels'
+end
+
+group :production do
+  gem 'pg'
 end
 
 # To use ActiveModel has_secure_password
