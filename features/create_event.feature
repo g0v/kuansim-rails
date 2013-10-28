@@ -16,3 +16,12 @@ Scenario: create a barebones event
 	And I press "Create Event"
 	Then I should be on the home page
 	And I should see "Bart Strike"
+
+Scenario: no event should be created if all fields are empty upon submission
+
+	Given I am on the home page
+	When I follow "Add Event"
+	Then I should be on the new event page
+	And I press "Create Event"
+	Then I should be on the home page
+	And I should see "Your event was not created. At least one field must be filled out."
