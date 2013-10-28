@@ -134,7 +134,7 @@ RSpec:
     - 
     - 
     - 
-  :created_at: 2013-10-27 21:36:15.165058334 -07:00
+  :created_at: 2013-10-27 22:34:09.903727239 -07:00
 Cucumber Features:
   :original_result:
     /home/saasbook/CS169/kuansim-rails/app/models/user.rb:
@@ -270,4 +270,4 @@ Cucumber Features:
     - 
     - 
     - 
-  :created_at: 2013-10-27 22:09:03.227306245 -07:00
+  :created_at: 2013-10-27 22:34:29.234011950 -07:00
