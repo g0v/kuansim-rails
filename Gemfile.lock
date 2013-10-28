@@ -166,6 +166,7 @@ DEPENDENCIES
   cucumber-rails-training-wheels
   database_cleaner
   jquery-rails
+  json
   launchy
   pg
   rails (= 3.2.14)
