@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kuansim</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= stylesheet_link_tag "bootstrap-theme.min" %>
+  <%= stylesheet_link_tag "bootstrap.min" %>
+  <%= javascript_include_tag "application" %>
+  <%= javascript_include_tag "bootstrap.min" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<div class="container">
+	<nav class="navbar navbar-inverse" role="navigation">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#">Kuansim</a>
+		</div>
+
+		<div class="collapse navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li class="active">
+					<a href="#">Home</a>
+				</li>
+				<li>
+					<a href="#">Take Action</a>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<% if user_signed_in? %>
+						<a href="#">Hello, <%= current_user.name %></a>
+					<% else %>
+						<a href="<%= user_login_path %>">Login</a>
+					<% end %>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<%= yield %>
+</div>
+
+</body>
+</html>

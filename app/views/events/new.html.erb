@@ -1,0 +1,29 @@
+<div class="col-lg-5">
+
+  <h3> Create New Event </h3>
+
+  <%= form_tag events_path do %>
+      <div class="form-group">
+        <%= label :event, :title, 'Title' %>
+        <%= text_field :event, 'title', :class => "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= label :event, :title, 'Datetime' %>
+        <%= text_field :event, 'datetime', :class => "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= label :event, :location, 'Location' %>
+        <%= text_field :event, 'location', :class => "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= label :event, :description, 'Description' %>
+        <%= text_field :event, 'description', :class => "form-control" %>
+      </div>
+
+      <%= submit_tag 'Create Event', :class => "btn btn-default" %>
+  <% end %>
+
+</div>

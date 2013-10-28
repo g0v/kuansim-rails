@@ -1,0 +1,29 @@
+<% if flash[:error] -%>
+	<div class="alert alert-danger">
+		<p class='error'><%=h flash[:error] %></p>
+	</div>
+<% end -%>
+
+<div class="col-lg-12">
+	<h4>Events</h4>
+	<table class="table">
+		<tr>
+			<th>Title</th>
+			<th>Date</th>
+			<th>Location</th>
+			<th>Description</th>
+		</tr>
+		<% @events.each do |e| %>
+			<tr>
+				<td><%= e.title %></td>
+				<td><%= e.datetime %></td>
+				<td><%= e.location %></td>
+				<td><%= e.description %></td>
+			</tr>
+		<% end %>
+	</table>
+	<div>
+		<%= link_to 'Add Event', new_event_path %>
+	</div>
+
+</div>
