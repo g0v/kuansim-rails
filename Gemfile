@@ -28,12 +28,14 @@ gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
 group :development, :test do
+  gem 'factory_girl'
   gem 'sqlite3'
 	gem 'ruby-debug19'
 	gem 'database_cleaner'
 	gem 'capybara'
 	gem 'launchy'
 	gem 'rspec-rails'
+  gem 'simplecov'
 end
 
 group :test do
