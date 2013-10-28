@@ -64,4 +64,9 @@ Kuansim::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+  ENV['facebook_api_id'] = "498041163626572"
+  ENV['facebook_api_secret'] = "5a4c3703529f62d1d9d555960ecb5c18"
+  ENV['google_api_id'] = '497331393377-cb5di7qqi6ejvmj6if2vtubh4rafjf7m.apps.googleusercontent.com'
+  ENV['google_api_secret'] = 'VWq1Cpqs56AIniD_0O8pyafJ'
 end

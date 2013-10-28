@@ -28,7 +28,11 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li>
-					<a href="#">Login</a>
+					<% if user_signed_in? %>
+						<a href="#">Hello, <%= current_user.name %></a>
+					<% else %>
+						<a href="<%= user_login_path %>">Login</a>
+					<% end %>
 				</li>
 			</ul>
 		</div>
