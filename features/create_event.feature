@@ -6,7 +6,13 @@ Feature: create a current event pertaining to a social or political issue
 
 Scenario: create a barebones event
 	
-	When I click on the "create_event" link
-	When I input the title as "Bart Strike", the date as "10/18/2013", the location as "Bay Area", the description as "Bart strike."
-	And I click on the "submit_new_event" link
-	Then I should see the event timeline of the event "Bart Strike"
+	Given I am on the home page	
+	When I follow "Add Event"
+	Then I should be on the new event page
+	When I fill in "Title" with "Bart Strike"
+	When I fill in "Datetime" with "10/18/2013"
+	When I fill in "Location" with "Bay Area"
+	When I fill in "Description" with "Bart Strike"
+	And I press "Create Event"
+	Then I should be on the home page
+	And I should see "Bart Strike"
