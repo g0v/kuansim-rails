@@ -8,4 +8,8 @@ class EventsController < ApplicationController
 		Event.create(new_event_params)
 		redirect_to root_path
 	end
+
+	def new
+	end
+
 end
