@@ -2,28 +2,18 @@ Feature: login to kuansim using a third party's signle-sign-on
 
 	As an politically and socially active citizen
 	So that I can stay connected with others who care about the same issues
-	I want to be connected through Facebook, Github, Google, or Twitter
+	I want to be connected through Facebook or Google
 
+@omniauth_test
 Scenario: login via Facebook
-	When I click on the "login" link
-	When I choose to login via Facebook
-	When I input "coolfred12345@gmail.com" and "secretpw12345"
-	Then I should be authenticated successfully
+	Given I am on the home page
+	When I follow "Login"
+	When I follow "Sign in with Facebook"
+	Then I should be on the home page
 
-Scenario: login via Github
-	When I click on the "login" link
-	When I choose to login via Github
-	When I input "coolfred12345@gmail.com" and "secretpw12345"
-	Then I should be authenticated successfully
-
+@omniauth_test
 Scenario: login via Google
-	When I click on the "login" link
-	When I choose to login via Google
-	When I input "coolfred12345@gmail.com" and "secretpw12345"
-	Then I should be authenticated successfully
-
-Scenario: login via Twitter
-	When I click on the "login" link
-	When I choose to login via Twitter
-	When I input "coolfred12345@gmail.com" and "secretpw12345"
-	Then I should be authenticated successfully
+	Given I am on the home page
+	When I follow "Login"
+	When I follow "Sign in with Google"
+	Then I should be on the home page
