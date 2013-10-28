@@ -211,6 +211,7 @@ DEPENDENCIES
   database_cleaner
   devise
   jquery-rails
+  json
   launchy
   omniauth
   omniauth-facebook
