@@ -8,4 +8,7 @@ class EventsController < ApplicationController
 		Event.create(new_event_params)
 	end
 
+	def new
+	end
+
 end

@@ -21,9 +21,31 @@
 		</div>
 	</nav>
 
-	<div class="jumbotron">
+	<h4>Events</h4>
+	<table class="table">
+		<tr>
+			<th>Title</th>
+			<th>Date</th>
+			<th>Location</th>
+			<th>Description</th>
+		</tr>
+		<%= @events.each do |e| %>
+			<tr>
+				<td><%=e.title%></td>
+				<td><%=e.datetime%></td>
+				<td><%=e.location%></td>
+				<td><%=e.description%></td>
+			</tr>
+		<% end %>
+	</table>
+	<div>
+		<%= link_to 'Add Event', new_event_path %>
+	</div>
+
+
+	<%#<div class="jumbotron">
 		<h1>Kuansim</h1>
 		<p>Kuansim provides an easily accessible online platform where people can learn and become involved in discussions and activities about social issues.</p>
 		<p><a class="btn btn-primary btn-lg" href="#">Learn more</a></p>
-	</div>
+	</div>%>
 </div>
