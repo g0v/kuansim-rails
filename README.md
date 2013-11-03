@@ -16,7 +16,7 @@ kuansim-rails/
 ├── kuansim-frontend @ kuansim-frontend cal branch
 ├── lib
 ├── log
-├── public -> kuansim-frontend/build
+├── public -> kuansim-frontend/bin
 ├── script
 ├── spec
 ├── test
