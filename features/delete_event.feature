@@ -9,6 +9,6 @@ Scenario: delete an existing event
 	Given I am on the home page
 	When I follow Timeline
 	Then I should be on the timeline page
-	When I follow an event
-	When I am the author of the event
+	When I follow "Bart Strike"
+	When I am the author of "Bart Strike"
 	Then I should see "delete"
