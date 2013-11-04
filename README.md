@@ -45,7 +45,9 @@ $ rake db:migrate db:test:prepare db:seed
 $ rails s
 ```
 
-The front-end AngularJS project needs a bit of work, please consult the [documentation](https://github.com/g0v/kuansim-frontend/blob/cal/README.md) for a detail walk-through. A brief instruction:
+The front-end AngularJS project needs a bit of work, please consult the [documentation](https://github.com/g0v/kuansim-frontend/blob/cal/README.md) for a detail walk-through. Note that the AngularJS build files are already included in `kuansim-frontend/bin` directory.
+
+A brief instruction:
 
 - cd into kuansim-frontend directory
 - install necessarily dependencies (note: npm is required)
