@@ -1,20 +1,16 @@
 require 'json'
+require 'date'
 
 class EventsController < ApplicationController
 
   def create
-    new_event_params = params[:event]
+    new_event_params = params
     json_reply = {success: true}
     if new_event_params.nil?
       json_reply[:success] = false
       json_reply[:error] = "Your event was not created. At least one field must be filled out."
     else
-      new_event_params[:date_happened] = DateTime.new( new_event_params[:year].to_i,
-                                                  new_event_params[:month].to_i,
-                                                  new_event_params[:day].to_i )
-      new_event_params.delete("year")
-      new_event_params.delete("month")
-      new_event_params.delete("day")
+      new_event_params[:date_happened] = DateTime.parse(Time.at(params[:date_happened] / 1000).to_s)
       Event.create(new_event_params)
     end
     render json: json_reply
