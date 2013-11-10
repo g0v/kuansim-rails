@@ -57,7 +57,10 @@ Kuansim::Application.routes.draw do
     
   end
 
-  post '/users/authenticate', to: 'users#authenticate'
+  post  '/users/authenticate', to: 'users#authenticate'
+  post  '/collections/bookmarks', to: 'events#create'
+  post  '/collections/bookmarks/:id', to: 'events#delete'
+  get   '/collections/bookmarks', to: 'events#get_events'
 
 
   # You can have the root of your site routed with "root"

@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :provider, :uid
   # attr_accessible :title, :body
 
+  has_many :events
 
   # TODO: CHECK FOR MALFORMED EMAILS
   def self.find_by_provider(user_info, provider)
