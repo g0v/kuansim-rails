@@ -1,6 +1,6 @@
 Kuansim::Application.routes.draw do
 
-  devise_for :users
+  devise_for :users, only: [:sign_in]
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -54,15 +54,19 @@ Kuansim::Application.routes.draw do
   # end
 
   namespace :api, defaults: {format: :json} do
-    
   end
 
+<<<<<<< HEAD
   post  '/users/authenticate', to: 'users#authenticate'
   post  '/collections/bookmarks', to: 'events#create'
   post  '/collections/bookmarks/:id', to: 'events#delete'
   get   '/collections/bookmarks', to: 'events#get_events'
 
 
+=======
+  post '/users/authenticate', to: 'users#authenticate'
+  post '/users/sign_out', to: 'users#destroy_session'
+>>>>>>> origin/json-api
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   # root :to => redirect('/index.html')

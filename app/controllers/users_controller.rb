@@ -5,20 +5,25 @@ class UsersController < ApplicationController
   def authenticate
     provider = params[:provider]
     access_token = params[:access]
-    uri = URI(self.send("#{provider}_info".to_sym, access_token))
-    user_info = JSON.parse(uri.read, symbolize_names: true)
-    user = User.find_by_provider(user_info, provider)
-    login(user.email, user)
+    uri = URI.parse(self.send("#{provider}_info".to_sym, access_token))
+    user_info = JSON.parse(uri.read)
+    puts user_info
+    @user = User.find_by_provider(user_info, provider)
+    login(@user.email)
   end
 
-  private
+  def destroy_session
+    email = params[:email]
+    user = User.find_by_email(email)
+    sign_out user
+    render json: {}
+  end
 
-  def login(email, user = nil)
-    @user = user
+  def login(email)
     if @user
       sign_in @user, :event => :authentication
     else
-      @user = User.find_by email: email
+      @user = User.find_by_email(email)
       sign_in @user, :event => :authentication
     end
     
