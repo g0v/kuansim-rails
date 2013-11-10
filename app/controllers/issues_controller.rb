@@ -17,8 +17,8 @@ class IssuesController < ApplicationController
         :text => event.description,
         :tag => tags_list.join(", "),
         :asset => {
-          :media => ""
-          :credit => ""
+          :media => "",
+          :credit => "",
           :caption => ""
         }
       }
@@ -30,10 +30,10 @@ class IssuesController < ApplicationController
         :type => "default", 
         :text => issue.description, 
         :asset => {
-          :media => ""
-          :credit => ""
+          :media => "",
+          :credit => "",
           :caption => ""
-        }
+        },
         :date => events_list
       }
     }.to_json
