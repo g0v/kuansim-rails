@@ -21,10 +21,12 @@ class IssuesController < ApplicationController
           :credit => "",
           :caption => ""
         }
-      }
+      }.to_json
+
+      render json: events_list
     end
     
-    timeline_data_model = {
+    render json: {
       :timeline => {
         :headline => issue.title, 
         :type => "default", 
@@ -36,7 +38,7 @@ class IssuesController < ApplicationController
         },
         :date => events_list
       }
-    }.to_json
+    }
   end
 
 end
