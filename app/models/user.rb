@@ -9,6 +9,27 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :provider, :uid
   # attr_accessible :title, :body
 
+
+  # TODO: CHECK FOR MALFORMED EMAILS
+  def self.find_by_provider(user_info, provider)
+    raise "Invalid provider" if provider != "google" and provider != "facebook"
+
+    user = User.where(provider: provider, uid: user_info[:id]).first
+    return user if user
+
+    registered_user = User.where(email: user_info[:email]).first
+    return registered_user if registered_user
+
+
+    User.create!(name: user_info[:name],
+      provider: provider,
+      uid: user_info[:id],
+      email: user_info[:email],
+      password: Devise.friendly_token[0, 20]
+    )
+
+  end
+
   def self.find_for_facebook_oauth(auth, signed_in_resource=nil)
     user = User.where(:provider => auth.provider, :uid => auth.uid).first
     if user
