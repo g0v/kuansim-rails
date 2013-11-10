@@ -11,6 +11,13 @@ class UsersController < ApplicationController
     login(user.email, user)
   end
 
+  def destroy_session
+    email = params[:email]
+    user = User.find_by email: email
+    sign_out user
+    render json: {}
+  end
+
   private
 
   def login(email, user = nil)
