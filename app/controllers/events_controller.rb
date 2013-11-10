@@ -66,7 +66,7 @@ class EventsController < ApplicationController
       events_list = Event.take(limit.to_i)
     end
     if !events_list.nil?
-      json_reply[:events] = events_list.to_json
+      json_reply[:events] = events_list
       puts json_reply
     end
     render json: json_reply
