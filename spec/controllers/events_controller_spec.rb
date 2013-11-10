@@ -23,16 +23,16 @@ describe EventsController do
   end
   describe 'delete' do
     it 'should delete the selected event' do
-      
-      user = FactoryGirl.create(:user, )
+      event = FactoryGirl.create(:event)
+      user = FactoryGirl.create(:user, events: [event])
       user.confirm!
       sign_in user
+      Event.stub(:find) {event}
       Event.should_receive(:find).with(user.id)
       Event.should_receive(:delete).with(user.id)
       post :delete, {:id => user.id}
     end
     it 'should not delete the selected event if the user does not own the event' do
-      Event.
     end
   end
   describe 'get_events' do

@@ -18,18 +18,21 @@ class EventsController < ApplicationController
 
   def delete
     json_reply = {success: true}
-    delete_id = params[:id].to_i
-    if current_user.nil?
+    delete_id = params[:id]
+    if params[:id].nil?
       json_reply[:success] = false
-      json_reply[:error] = "The event was not deleted. You must be logged in."
-    elsif !current_user.events.include? Event.find(delete_id)
-      json_reply[:success] = false
-      json_reply[:error] = "The event was not deleted. You must be own this event."  
-    elsif delete_id.nil?
-      json_reply[:success] = false
-      json_reply[:error] = "The event was not deleted. An event must be selected."
+      json_reply[:error] = "The event was not deleted. You must select an event first."
     else
-      Event.delete(delete_id)
+      delete_id = delete_id.to_i
+      if current_user.nil?
+        json_reply[:success] = false
+        json_reply[:error] = "The event was not deleted. You must be logged in."
+      elsif !current_user.events.include? Event.find(delete_id)
+        json_reply[:success] = false
+        json_reply[:error] = "The event was not deleted. You must be own this event."  
+      else
+        Event.delete(delete_id)
+      end
     end
     render json: json_reply
   end
