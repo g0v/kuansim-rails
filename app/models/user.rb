@@ -14,17 +14,17 @@ class User < ActiveRecord::Base
   def self.find_by_provider(user_info, provider)
     raise "Invalid provider" if provider != "google" and provider != "facebook"
 
-    user = User.where(provider: provider, uid: user_info[:id]).first
+    user = User.where(provider: provider, uid: user_info["id"]).first
     return user if user
 
-    registered_user = User.where(email: user_info[:email]).first
+    registered_user = User.where(email: user_info["email"]).first
     return registered_user if registered_user
 
 
-    User.create!(name: user_info[:name],
+    User.create!(name: user_info["name"],
       provider: provider,
-      uid: user_info[:id],
-      email: user_info[:email],
+      uid: user_info["id"],
+      email: user_info["email"],
       password: Devise.friendly_token[0, 20]
     )
 
