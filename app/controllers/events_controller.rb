@@ -4,7 +4,9 @@ require 'date'
 class EventsController < ApplicationController
 
   def create
-    new_event_params = params
+    new_event_params = params[:event]
+    puts "here"
+    puts new_event_params
     json_reply = {success: true}
     if new_event_params.nil?
       json_reply[:success] = false
@@ -63,7 +65,8 @@ class EventsController < ApplicationController
       events_list = Event.take(limit.to_i)
     end
     if !events_list.nil?
-      json_reply[:events] = events_list.map{ |evt| evt.to_json }.to_json
+      json_reply[:events] = events_list.to_json
+      puts json_reply
     end
     render json: json_reply
   end
