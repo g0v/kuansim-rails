@@ -1,6 +1,6 @@
 Kuansim::Application.routes.draw do
 
-  devise_for :users, only: [:sign_in, :sign_out]
+devise_for :users, only: [:sign_in]
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -57,8 +57,7 @@ Kuansim::Application.routes.draw do
   end
 
   post '/users/authenticate', to: 'users#authenticate'
-  post '/users/sign_in', to: 'devise/sessions#create'
-
+  post '/users/sign_out', to: 'users#destroy_session'
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   # root :to => redirect('/index.html')

@@ -13,7 +13,7 @@ class UsersController < ApplicationController
 
   def destroy_session
     email = params[:email]
-    user = User.find_by email: email
+    user = User.find_by_email(email)
     sign_out user
     render json: {}
   end
@@ -25,7 +25,7 @@ class UsersController < ApplicationController
     if @user
       sign_in @user, :event => :authentication
     else
-      @user = User.find_by email: email
+      @user = User.find_by_email(email)
       sign_in @user, :event => :authentication
     end
     
