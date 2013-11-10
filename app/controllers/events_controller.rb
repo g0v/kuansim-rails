@@ -11,6 +11,7 @@ class EventsController < ApplicationController
       json_reply[:error] = "The event was not created. At least one field must be filled out."
     else
       new_event_params[:date_happened] = DateTime.parse(Time.at(params[:date_happened].to_i / 1000).to_s)
+      new_event_params[:user_id] = current_user.id
       Event.create(new_event_params)
     end
     render json: json_reply
