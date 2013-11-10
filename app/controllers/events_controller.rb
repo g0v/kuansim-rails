@@ -8,9 +8,9 @@ class EventsController < ApplicationController
     json_reply = {success: true}
     if new_event_params.nil?
       json_reply[:success] = false
-      json_reply[:error] = "Your event was not created. At least one field must be filled out."
+      json_reply[:error] = "The event was not created. At least one field must be filled out."
     else
-      new_event_params[:date_happened] = DateTime.parse(Time.at(params[:date_happened] / 1000).to_s)
+      new_event_params[:date_happened] = DateTime.parse(Time.at(params[:date_happened].to_i / 1000).to_s)
       Event.create(new_event_params)
     end
     render json: json_reply
@@ -19,13 +19,15 @@ class EventsController < ApplicationController
   def delete
     json_reply = {success: true}
     delete_id = params[:id].to_i
-    if current_user.events.include? Event.find(delete_id)
+    if current_user.nil?
       json_reply[:success] = false
-      json_reply[:error] = "Your event was not deleted. You must be own this event."  
-    end
-    if delete_id.nil?
+      json_reply[:error] = "The event was not deleted. You must be logged in."
+    elsif !current_user.events.include? Event.find(delete_id)
       json_reply[:success] = false
-      json_reply[:error] = "Your event was not deleted. An event must be selected."
+      json_reply[:error] = "The event was not deleted. You must be own this event."  
+    elsif delete_id.nil?
+      json_reply[:success] = false
+      json_reply[:error] = "The event was not deleted. An event must be selected."
     else
       Event.delete(delete_id)
     end
@@ -37,7 +39,7 @@ class EventsController < ApplicationController
     event_id = params[:id].to_i
     if event_id.nil?
       json_reply[:success] = false
-      json_reply[:error] = "Your event was not returned. Param id is required."
+      json_reply[:error] = "The event was not returned. Param id is required."
     else
       ret_event_json = Event.find(event_id).as_json
       json_reply[:event] = ret_event
@@ -53,7 +55,7 @@ class EventsController < ApplicationController
       events_list = Event.all
     elsif !limit.is_a?(Integer)
       json_reply[:success] = false
-      json_reply[:error] = "Your events were not returned. Param id must be an integer."
+      json_reply[:error] = "The events were not returned. Param id must be an integer."
     else
       events_list = Event.take(limit.to_i)
     end

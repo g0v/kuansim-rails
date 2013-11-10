@@ -14,7 +14,7 @@ describe EventsController do
                        "description" => "This is a horrible event!",
                        "date_happened" => DateTime.parse(Time.at(1234567 / 1000).to_s)}
       Event.should_receive(:create).with(fake_mod_data)
-      post :create, {:event => fake_data}
+      post :create, fake_data
     end
     it 'should not create a new event if no params are supplied' do
       Event.should_not_receive(:create)
@@ -23,12 +23,15 @@ describe EventsController do
   end
   describe 'delete' do
     it 'should delete the selected event' do
-      fake_id = "1"
-      Event.should_receive(:delete).with(fake_id.to_i)
-      post :delete, {:id => fake_id}
+      user = FactoryGirl.create(:user)
+      user.confirm!
+      sign_in user
+      Event.should_receive(:find).with(user.id)
+      Event.should_receive(:delete).with(user.id)
+      post :delete, {:id => user.id}
     end
     it 'should not delete the selected event if the user does not own the event' do
-      mock('user')
+      Event.
     end
   end
   describe 'get_events' do
