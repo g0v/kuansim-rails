@@ -23,6 +23,10 @@ class EventsController < ApplicationController
   def delete
     json_reply = {success: true}
     delete_id = params[:id].to_i
+    if current_user.events.include? Event.find(delete_id)
+      json_reply[:success] = false
+      json_reply[:error] = "Your event was not deleted. You must be own this event."  
+    end
     if delete_id.nil?
       json_reply[:success] = false
       json_reply[:error] = "Your event was not deleted. An event must be selected."
