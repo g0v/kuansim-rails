@@ -13,4 +13,8 @@ describe Event do
 	it "should have a valid title" do 
 		@event.title.should eq "Fake title"
 	end
+	it "should be able to be as json" do
+		h = {"id" => "1", "title" => "ASDF", "date_happened" => "112233"} 
+		expect{@event.as_json(h)}.to be_true
+	end
 end
