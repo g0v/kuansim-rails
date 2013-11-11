@@ -25,12 +25,10 @@ end
 gem 'jquery-rails'
 gem 'devise'
 gem 'omniauth'
-gem 'omniauth-facebook'
-gem 'omniauth-twitter'
-gem 'omniauth-google-oauth2'
 
 group :development, :test do
   gem 'factory_girl'
+  gem 'factory_girl_rails'
   gem 'sqlite3'
 	gem 'ruby-debug19'
 	gem 'database_cleaner'

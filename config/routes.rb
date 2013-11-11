@@ -1,16 +1,14 @@
 Kuansim::Application.routes.draw do
-  devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
 
-  resources :events
+  devise_for :users, only: [:sign_in]
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
-  root :to => "home#index"
 
-  match 'users/login' => 'users#login', :as => :user_login
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
   # This route can be invoked with purchase_url(:id => product.id)
@@ -51,10 +49,32 @@ Kuansim::Application.routes.draw do
   #     resources :products
   #   end
 
+  # namespace :api, defaults: {format: 'json'} do
+  #   resources :users
+  # end
+
+  namespace :api, defaults: {format: :json} do
+  end
+
+  post  '/users/authenticate', to: 'users#authenticate'
+  post  '/collections/bookmarks', to: 'events#create'
+  delete  '/collections/bookmarks/:id', to: 'events#delete'
+  put '/collections/bookmarks/:id', to: 'events#update'
+  get   '/collections/bookmarks', to: 'events#get_events'
+  post  '/users/sign_out', to: 'users#destroy_session'
+
+  ############################# ISSUE #############################
+  get   '/collections/issues', to: 'issues#list_all_issues'
+  get   '/collections/issues/:issue_id', to: 'issues#timeline'
+  ############################# ISSUE #############################
+
+  get   '/collections/bookmarks/:id', to: 'events#get_event'
+
+  
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => redirect('/index.html')
-  root :to => 'static#show'
+  # root :to => redirect('/index.html')
+  # root :to => 'static#show'
 
   # See how all your routes lay out with "rake routes"
 
