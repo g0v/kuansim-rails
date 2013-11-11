@@ -5,6 +5,7 @@ class IssuesController < ApplicationController
     return_json = []
     Issue.find(:all).each do |issue|
       return_json << {
+        :id => issue.id,
         :title => issue.title,
         :description => issue.description
       }
