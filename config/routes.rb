@@ -63,6 +63,7 @@ Kuansim::Application.routes.draw do
   post  '/users/sign_out', to: 'users#destroy_session'
 
   ############################# ISSUE #############################
+  get   '/collections/issues', to: 'issues#list_all_issues'
   get   '/collections/issues/:issue_id', to: 'issues#timeline'
   ############################# ISSUE #############################
 

@@ -1,6 +1,17 @@
 class IssuesController < ApplicationController
   require 'json'
 
+  def list_all_issues
+    return_json = []
+    Issue.find(:all).each do |issue|
+      return_json << {
+        :title => issue.title,
+        :description => issue.description
+      }
+    end
+    render json: return_json
+  end
+
   def timeline
     issue_id = params[:issue_id]
     issue = Issue.find_by_id(issue_id)
