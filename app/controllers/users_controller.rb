@@ -7,7 +7,6 @@ class UsersController < ApplicationController
     access_token = params[:access]
     uri = URI.parse(self.send("#{provider}_info".to_sym, access_token))
     user_info = JSON.parse(uri.read)
-    puts user_info
     @user = User.find_by_provider(user_info, provider)
     login(@user.email)
   end

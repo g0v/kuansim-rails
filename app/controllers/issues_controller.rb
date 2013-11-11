@@ -17,26 +17,28 @@ class IssuesController < ApplicationController
         :text => event.description,
         :tag => tags_list.join(", "),
         :asset => {
-          :media => ""
-          :credit => ""
+          :media => "",
+          :credit => "",
           :caption => ""
         }
-      }
+      }.to_json
+
+      render json: events_list
     end
     
-    timeline_data_model = {
+    render json: {
       :timeline => {
         :headline => issue.title, 
         :type => "default", 
         :text => issue.description, 
         :asset => {
-          :media => ""
-          :credit => ""
+          :media => "",
+          :credit => "",
           :caption => ""
-        }
+        },
         :date => events_list
       }
-    }.to_json
+    }
   end
 
 end
