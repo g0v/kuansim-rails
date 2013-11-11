@@ -10,15 +10,19 @@ describe EventsController do
       sign_in user
       fake_data = {"event" => {
                       "title" => 'Bart Strike',
-                      "date_happened" => '1234567',
                       "location" => 'San Francisco, CA',
-                      "description" => "This is a horrible event!"}}
+                      "description" => "This is a horrible event!",
+                      "date_happened" => '1234567'}}
       fake_mod_data = {"title" => 'Bart Strike',
                        "location" => 'San Francisco, CA',
                        "description" => "This is a horrible event!",
-                       "date_happened" => DateTime.parse(Time.at(1234567 / 1000).to_s)}
+                       "date_happened" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
+                       "user_id" => user.id}
+      # puts DateTime.parse(Time.at(1234567.0 / 1000.0).to_s)
+      # puts DateTime.parse(Time.at(1234567.to_f / 1000.0).to_s)
       Event.should_receive(:create).with(fake_mod_data)
       post :create, fake_data
+      puts response.body
     end
     it 'should not create a new event if no params are supplied' do
       Event.should_not_receive(:create)
@@ -27,14 +31,13 @@ describe EventsController do
   end
   describe 'delete' do
     it 'should delete the selected event' do
-      event = create(:event)
       user = FactoryGirl.create(:user)
       # user.confirm!
       sign_in user
-      Event.stub(:find) {event}
-      Event.should_receive(:find).with(user.id)
-      Event.should_receive(:delete).with(user.id)
-      post :delete, {:id => user.id}
+      Event.should_receive(:find).with(user.events[0].id)
+      Event.should_receive(:delete).with(user.events[0].id)
+      post :delete, {:id => user.events[0].id}
+      puts response.body
     end
     it 'should not delete the selected event if the user does not own the event' do
     end
