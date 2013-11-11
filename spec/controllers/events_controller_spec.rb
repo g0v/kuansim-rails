@@ -5,10 +5,14 @@ require 'json'
 describe EventsController do
   describe 'create' do
     it 'should create a new event' do
-      fake_data = {"title" => 'Bart Strike',
-                   "date_happened" => '1234567',
-                   "location" => 'San Francisco, CA',
-                   "description" => "This is a horrible event!"}
+      user = FactoryGirl.create(:user)
+      # user.confirm!
+      sign_in user
+      fake_data = {"event" => {
+                      "title" => 'Bart Strike',
+                      "date_happened" => '1234567',
+                      "location" => 'San Francisco, CA',
+                      "description" => "This is a horrible event!"}}
       fake_mod_data = {"title" => 'Bart Strike',
                        "location" => 'San Francisco, CA',
                        "description" => "This is a horrible event!",
@@ -23,9 +27,9 @@ describe EventsController do
   end
   describe 'delete' do
     it 'should delete the selected event' do
-      event = FactoryGirl.create(:event)
-      user = FactoryGirl.create(:user, events: [event])
-      user.confirm!
+      event = create(:event)
+      user = FactoryGirl.create(:user)
+      # user.confirm!
       sign_in user
       Event.stub(:find) {event}
       Event.should_receive(:find).with(user.id)

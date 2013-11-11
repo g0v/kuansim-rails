@@ -28,6 +28,7 @@ gem 'omniauth'
 
 group :development, :test do
   gem 'factory_girl'
+  gem 'factory_girl_rails'
   gem 'sqlite3'
 	gem 'ruby-debug19'
 	gem 'database_cleaner'

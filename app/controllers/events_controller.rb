@@ -5,16 +5,19 @@ class EventsController < ApplicationController
 
   def create
     new_event_params = params[:event]
-    puts "here"
-    puts new_event_params
     json_reply = {success: true}
     if new_event_params.nil?
       json_reply[:success] = false
       json_reply[:error] = "The event was not created. At least one field must be filled out."
     else
       new_event_params[:date_happened] = DateTime.parse(Time.at(params[:date_happened].to_i / 1000).to_s)
-      new_event_params[:user_id] = current_user.id
-      Event.create(new_event_params)
+      if current_user.nil?
+        new_event_params[:user_id] = current_user.id
+        Event.create(new_event_params)
+      else
+        json_reply[:success] = false
+        json_reply[:error] = "The event was not created. You must be logged in to create a new event."
+      end
     end
     render json: json_reply
   end

@@ -1,8 +1,13 @@
 FactoryGirl.define do
   factory :user do
-    events = []
+    email "wohf@gmail.com"
+    password "secretpassword"
+    events {
+      [FactoryGirl.create(:event)]
+    }
   end
 
   factory :event do
+
   end
 end
