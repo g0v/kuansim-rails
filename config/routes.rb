@@ -60,8 +60,12 @@ Kuansim::Application.routes.draw do
   post  '/collections/bookmarks', to: 'events#create'
   post  '/collections/bookmarks/:id', to: 'events#delete'
   get   '/collections/bookmarks', to: 'events#get_events'
-  post '/users/sign_out', to: 'users#destroy_session'
-  
+  post  '/users/sign_out', to: 'users#destroy_session'
+
+  ############################# ISSUE #############################
+  get   '/collections/issues/:issue_id', to: 'issues#timeline'
+  ############################# ISSUE #############################
+
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   # root :to => redirect('/index.html')
