@@ -78,6 +78,8 @@ class EventsController < ApplicationController
     render json: json_reply
   end
 
+  
+
   def new
   end
 
