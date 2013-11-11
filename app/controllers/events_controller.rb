@@ -10,7 +10,6 @@ class EventsController < ApplicationController
       json_reply[:success] = false
       json_reply[:error] = "The event was not created. At least one field must be filled out."
     else
-      puts 'here'
       new_event_params[:date_happened] = DateTime.parse(Time.at(new_event_params[:date_happened].to_f / 1000.0).to_s)
       if !current_user.nil?
         new_event_params[:user_id] = current_user.id
@@ -35,6 +34,9 @@ class EventsController < ApplicationController
         json_reply[:success] = false
         json_reply[:error] = "The event was not deleted. You must be logged in."
       elsif !current_user.events.include? Event.find(delete_id)
+        puts 'here'
+        puts current_user.events[0].id
+        puts Event.find(delete_id).id
         json_reply[:success] = false
         json_reply[:error] = "The event was not deleted. You must be own this event."  
       else

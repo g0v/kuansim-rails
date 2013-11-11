@@ -22,7 +22,6 @@ describe EventsController do
       # puts DateTime.parse(Time.at(1234567.to_f / 1000.0).to_s)
       Event.should_receive(:create).with(fake_mod_data)
       post :create, fake_data
-      puts response.body
     end
     it 'should not create a new event if no params are supplied' do
       Event.should_not_receive(:create)
