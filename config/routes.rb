@@ -56,8 +56,12 @@ Kuansim::Application.routes.draw do
   namespace :api, defaults: {format: :json} do
   end
 
-  post '/users/authenticate', to: 'users#authenticate'
+  post  '/users/authenticate', to: 'users#authenticate'
+  post  '/collections/bookmarks', to: 'events#create'
+  post  '/collections/bookmarks/:id', to: 'events#delete'
+  get   '/collections/bookmarks', to: 'events#get_events'
   post '/users/sign_out', to: 'users#destroy_session'
+  
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   # root :to => redirect('/index.html')
