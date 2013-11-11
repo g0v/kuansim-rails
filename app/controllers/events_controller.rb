@@ -63,7 +63,7 @@ class EventsController < ApplicationController
       json_reply[:error] = "The event was not returned. Param id is required."
     else
       ret_event_json = Event.find(event_id).as_json
-      json_reply[:event] = ret_event
+      json_reply[:event] = ret_event_json
     end
     render json: json_reply
   end
