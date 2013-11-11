@@ -61,6 +61,7 @@ Kuansim::Application.routes.draw do
   delete  '/collections/bookmarks/:id', to: 'events#delete'
   put '/collections/bookmarks/:id', to: 'events#update'
   get   '/collections/bookmarks', to: 'events#get_events'
+  get   '/collections/bookmarks/:id', to: 'events#get_event'
   post '/users/sign_out', to: 'users#destroy_session'
 
   

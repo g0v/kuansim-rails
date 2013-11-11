@@ -5,6 +5,5 @@ FactoryGirl.define do
   end
 
   factory :event do
-
   end
 end
