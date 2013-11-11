@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Event do
   	before :each do 
-		@event = Event.new(datetime: "May 14, 2014", description: "Some words", location: "San Jose, CA", title: "Fake title", issue_id: "123")
+		@event = Event.new(date_happened: "112233", description: "Some words", location: "San Jose, CA", title: "Fake title", issue_id: "123")
 	end
 	it "should have a datetime, description, title" do
 		@event.should be_an_instance_of Event
