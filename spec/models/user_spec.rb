@@ -19,9 +19,17 @@ describe User do
       @info.stub(:email).and_return("heyo")
     end 
     it "should return user" do 
-      User.find_by_provider("some info", "google")
     end
     it "should return registered user" do 
+    end
+  end
+  describe "Create new user" do 
+    before :each do
+      @user_info = {"email"=>"ms@goog.com", "name"=>"robot", "id"=>"123"}
+    end
+    it "should create a new user" do 
+      @user = User.find_by_provider(@user_info, "google")
+      expect(User.where(provider: "google", uid: @user_info[:id])).to be_true
     end
   end
 end
