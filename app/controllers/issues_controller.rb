@@ -16,17 +16,12 @@ class IssuesController < ApplicationController
   def timeline
     issue_id = params[:issue_id]
     issue = Issue.find_by_id(issue_id)
-
     events_list = []
-
     issue.events.each do |event|
-
       tags_list = []
-
       event.tags.each do |tag|
         tags_list << tag.name
       end
-
       events_list << {
         :startDate => "#{event.date_happened.year},#{event.date_happened.month},#{event.date_happened.day}",
         :headline => event.title,
@@ -38,9 +33,7 @@ class IssuesController < ApplicationController
           :caption => ""
         }
       }
-
     end
-
     render json: {
       :timeline => {
         :headline => issue.title,
