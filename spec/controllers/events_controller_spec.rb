@@ -39,7 +39,10 @@ describe EventsController do
       Event.should_receive(:delete).with(user.events[0].id)
       post :delete, {:id => user.events[0].id}
     end
-    it 'should not delete the selected event if the user does not own the event' do
+  end
+  describe 'update' do
+    it 'should update the selected event' do
+
     end
   end
   describe 'get_events' do

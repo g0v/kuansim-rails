@@ -3,6 +3,7 @@ require 'date'
 
 class EventsController < ApplicationController
 
+  # Will be called by both create and update. If id field is present, it is an update request.
   def create
     new_event_params = params[:event]
     json_reply = {success: true}
@@ -13,7 +14,17 @@ class EventsController < ApplicationController
       new_event_params[:date_happened] = DateTime.parse(Time.at(new_event_params[:date_happened].to_f / 1000.0).to_s)
       if !current_user.nil?
         new_event_params[:user_id] = current_user.id
-        Event.create(new_event_params)
+        if new_event_params[:id].nil?
+          Event.create(new_event_params)
+        else
+          event_id = new_event_params[:id].to_i
+          if !Event.find(event_id).nil?
+            json_reply[:success] = false
+            json_reply[:error] = "The event was not updated. The given id does not match any existing event."
+          else
+            Event.find(event_id).update_attributes(new_event_params)
+          end
+        end
       else
         json_reply[:success] = false
         json_reply[:error] = "The event was not created. You must be logged in to create a new event."
@@ -38,7 +49,7 @@ class EventsController < ApplicationController
         puts current_user.events[0].id
         puts Event.find(delete_id).id
         json_reply[:success] = false
-        json_reply[:error] = "The event was not deleted. You must be own this event."  
+        json_reply[:error] = "The event was not deleted. You must own this event."  
       else
         Event.delete(delete_id)
       end
@@ -78,7 +89,9 @@ class EventsController < ApplicationController
     render json: json_reply
   end
 
-  
+  def update
+    create
+  end
 
   def new
   end
