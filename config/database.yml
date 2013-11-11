@@ -51,7 +51,6 @@ production:
   encoding: unicode
   database: kuansim_production
   pool: 5
-  username: kuansim
   password:
 
 cucumber:
