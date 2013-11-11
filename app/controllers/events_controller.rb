@@ -11,10 +11,7 @@ class EventsController < ApplicationController
       json_reply[:error] = "The event was not created. At least one field must be filled out."
     else
       puts 'here'
-      new_event_params[:date_happened] = DateTime.parse(Time.at(params[:date_happened].to_f / 1000.0).to_s)
-      puts params[:date_happened]
-      puts Time.at(params[:date_happened].to_f / 1000.0)
-      puts new_event_params[:date_happened]
+      new_event_params[:date_happened] = DateTime.parse(Time.at(new_event_params[:date_happened].to_f / 1000.0).to_s)
       if !current_user.nil?
         new_event_params[:user_id] = current_user.id
         Event.create(new_event_params)
