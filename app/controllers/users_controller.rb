@@ -11,6 +11,17 @@ class UsersController < ApplicationController
     login(@user.email)
   end
 
+  def verify
+    email = params[:email]
+    if current_user.nil?
+      render json: {success: false, message: "No user logged in"}
+    elsif current_user.email != email
+      render json: {success: false, message: "Invalid email"}
+    else
+      render json: {success: true}
+    end
+  end
+
   def destroy_session
     email = params[:email]
     user = User.find_by_email(email)
