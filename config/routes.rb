@@ -53,21 +53,21 @@ Kuansim::Application.routes.draw do
   #   resources :users
   # end
 
-  post  '/api/users/authenticate', to: 'users#authenticate'
-  get '/api/users/verify', to: 'users#verify'
-  get '/api/users/profile', to: 'users#current_profile'
-  post  '/api/collections/bookmarks', to: 'events#create'
-  delete  '/api/collections/bookmarks/:id', to: 'events#delete'
-  put '/api/collections/bookmarks/:id', to: 'events#update'
-  get   '/api/collections/bookmarks', to: 'events#get_events'
-  get  '/api/users/sign_out', to: 'users#destroy_session'
+  post  '/users/authenticate', to: 'users#authenticate'
+  get '/users/verify', to: 'users#verify'
+  get '/users/profile', to: 'users#current_profile'
+  post  '/collections/bookmarks', to: 'events#create'
+  delete  '/collections/bookmarks/:id', to: 'events#delete'
+  put '/collections/bookmarks/:id', to: 'events#update'
+  get   '/collections/bookmarks', to: 'events#get_events'
+  get  '/users/sign_out', to: 'users#destroy_session'
 
   ############################# ISSUE #############################
-  get   '/api/collections/issues', to: 'issues#list_all_issues'
-  get   '/api/collections/issues/:issue_id', to: 'issues#timeline'
+  get   '/collections/issues', to: 'issues#list_all_issues'
+  get   '/collections/issues/:issue_id', to: 'issues#timeline'
   ############################# ISSUE #############################
 
-  get   '/api/collections/bookmarks/:id', to: 'events#get_event'
+  get   '/collections/bookmarks/:id', to: 'events#get_event'
 
 
   # You can have the root of your site routed with "root"
