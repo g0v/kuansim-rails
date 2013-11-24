@@ -3,12 +3,12 @@ require 'spec_helper'
 describe IssuesController do
     describe 'create' do
     it 'should create a new issue' do
+      user = FactoryGirl.create(:user)
+      sign_in user
       fake_data = {"issue" => {
                     "title" => 'Bart Strike',
-                    "datetime" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
                     "description" => "Renegotiating employee contract."}}
       fake_mod_data = {"title" => 'Bart Strike',
-                       "datetime" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
                        "description" => "Renegotiating employee contract."}
       Issue.should_receive(:create).with(fake_mod_data)
       post :create, fake_data
@@ -22,39 +22,39 @@ describe IssuesController do
 
   describe 'delete' do
     it 'should delete the selected issue' do
+      user = FactoryGirl.create(:user)
+      sign_in user
       issue = FactoryGirl.create(:issue)
-      Issue.stub(:find) {issue}
-      Issue.should_receive(:find).with(issue.id)
       Issue.should_receive(:delete).with(issue.id)
       delete :delete, {:id => issue.id}
+      puts response.body
     end
   end
 
   describe 'update' do
     it 'should update the selected issue' do
+      user = FactoryGirl.create(:user)
+      sign_in user
       issue = FactoryGirl.create(:issue)
-      fake_data = {"issue" => {
-              "title" => 'Bart Strike',
-              "datetime" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
-              "description" => "Renegotiating employee contract."}}
+      fake_data = {"id" => issue.id,
+              "issue" => {
+                "title" => 'Bart Strike',
+                "description" => "Renegotiating employee contract."}}
       fake_mod_data = {"title" => 'Bart Strike',
-                       "datetime" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
                        "description" => "Renegotiating employee contract."}
       Issue.stub(:find) {issue}
       Issue.should_receive(:find).with(issue.id)
       issue.should_receive(:update_attributes).with(fake_mod_data)
       put :update, fake_data
-      puts response.body
     end
 
     it 'should not update a new issue if the issue does not exist' do
-      event = FactoryGirl.create(:issue)
-      Issie.stub(:find) {issue}
+      issue = FactoryGirl.create(:issue)
+      Issue.stub(:find) {issue}
       issue.should_not_receive(:update_attributes)
       fake_data = { "id" => 5,
         "issue" => {
           "title" => 'Bart Strike',
-          "datetime" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
           "description" => "Renegotiating employee contract."
           }
         }
@@ -69,7 +69,7 @@ describe IssuesController do
     it "should successfully return data json for given issue" do
       load "#{Rails.root}/db/seeds.rb"
       id = Issue.find_by_title("Issue 0")
-      get :timeline, issue_id: id
+      get :timeline, id: id
       response.body.should have_content("Issue 0")
       response.body.should have_content("Jerry's drinking problem.")
       response.body.should have_content("Group Meeting Binge Drinking")
@@ -135,8 +135,6 @@ describe IssuesController do
       response.body.should have_content("second issue title")
       response.body.should have_content("issue description2")
     end
-
-
 
   end
 
