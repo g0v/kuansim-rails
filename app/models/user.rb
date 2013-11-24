@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 
   has_many :events
   has_one :profile
-  before_create :build_default_profile, :create_remember_token
+  before_create :build_default_profile
 
   # TODO: CHECK FOR MALFORMED EMAILS
   def self.find_by_provider(user_info, provider)

@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   require 'open-uri'
   require 'json'
-  require 'securerandom'
 
   def authenticate
     provider = params[:provider]
@@ -37,8 +36,10 @@ class UsersController < ApplicationController
   end
 
   def destroy_session
-    sign_out current_user
-    cookies.delete :user_c
+    if user_signed_in?
+      sign_out current_user
+      cookies.delete :user_c
+    end
     render json: {success: true}
   end
 
@@ -53,11 +54,15 @@ class UsersController < ApplicationController
   end
 
   def current_profile
-    if current_user.nil?
-      render json: {success: false, message: "No user logged in"}
+    if not user_signed_in?
+      render json: {
+        success: false,
+        message: "No user logged in"
+      }
     else
-      render json: {success: true, profile: {name: self.name, github: self.github}
-        .merge(current_user.profile.to_hash)
+      render json: {
+        success: true,
+        profile: current_user.profile.to_hash
       }
     end
   end

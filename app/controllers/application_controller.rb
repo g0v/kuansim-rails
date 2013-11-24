@@ -10,8 +10,6 @@ class ApplicationController < ActionController::Base
   protected
 
     def verified_request?
-      puts form_authenticity_token
-      puts request.headers['X-XSRF-TOKEN']
       super || form_authenticity_token == request.headers['X-XSRF-TOKEN']
     end
 end

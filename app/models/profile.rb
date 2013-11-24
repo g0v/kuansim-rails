@@ -4,6 +4,8 @@ class Profile < ActiveRecord::Base
 
   def to_hash
     {
+      name: self.user.name,
+      email: self.user.email,
       github: self.github,
       website: self.website,
       image: self.image
