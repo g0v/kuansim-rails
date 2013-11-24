@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   require 'open-uri'
   require 'json'
 
+  # Going to set user image each login (in case image changes)
   def authenticate
     provider = params[:provider]
     access_token = params[:access]
@@ -73,14 +74,6 @@ class UsersController < ApplicationController
 
   def facebook_info(access_token)
     "https://graph.facebook.com/me?access_token=#{access_token}"
-  end
-
-  def google_image_url(id)
-    "https://plus.google.com/s2/photos/profile/#{id}"
-  end
-
-  def facebook_image_url(id)
-    "https://graph.facebook.com/#{id}/?fields=picture.type(large)"
   end
 
 end

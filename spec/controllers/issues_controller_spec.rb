@@ -52,15 +52,17 @@ describe IssuesController do
       Issie.stub(:find) {issue}
       issue.should_not_receive(:update_attributes)
       fake_data = { "id" => 5,
-                    {"issue" => {
-              "title" => 'Bart Strike',
-              "datetime" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
-              "description" => "Renegotiating employee contract."}}
+        "issue" => {
+          "title" => 'Bart Strike',
+          "datetime" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
+          "description" => "Renegotiating employee contract."
+          }
+        }
       put :update, fake_data
     end
   end
 
-  decribe 'timeline' do
+  describe 'timeline' do
     before :each do
     end
 

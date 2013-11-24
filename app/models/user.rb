@@ -20,29 +20,26 @@ class User < ActiveRecord::Base
   def self.find_by_provider(user_info, provider)
     raise "Invalid provider" if provider != "google" and provider != "facebook"
 
-    user = User.where(provider: provider, uid: user_info["id"]).first
-    return user if user
+    user = User.where(email: user_info["email"]).first ||
+      User.where(provider: provider, uid: user_info["id"]).first ||
+      User.create!(name: user_info["name"],
+        provider: provider,
+        uid: user_info["id"],
+        email: user_info["email"],
+        password: Devise.friendly_token[0, 20]
+      )
 
-    registered_user = User.where(email: user_info["email"]).first
-    return registered_user if registered_user
-
-    user = User.create!(name: user_info["name"],
-      provider: provider,
-      uid: user_info["id"],
-      email: user_info["email"],
-      password: Devise.friendly_token[0, 20]
-    )
-    user.profile.image = user.image_url(user_info["id"], provider)
+    user.profile.image = user.image_url(user.uid, provider)
     user.profile.save
 
     user
   end
 
-  def image_url(id, provider)
+  def image_url(user_id, provider)
     if provider == "google"
-      google_image_url(id)
+      google_image_url(user_id)
     else
-      uri = URI.parse(facebook_image_url(id))
+      uri = URI.parse(facebook_image_url(user_id))
       pic_info = JSON.parse(uri.read)
       pic_info["picture"]["data"]["url"]
     end
@@ -50,16 +47,16 @@ class User < ActiveRecord::Base
 
   private
 
+    def build_default_profile
+      build_profile
+      true
+    end
+
     def google_image_url(id)
-      "https://plus.google.com/s2/photos/profile/#{id}"
+      "https://plus.google.com/s2/photos/profile/#{id}?sz=100"
     end
 
     def facebook_image_url(id)
       "https://graph.facebook.com/#{id}/?fields=picture.type(large)"
-    end
-
-    def build_default_profile
-      build_profile
-      true
     end
 end
