@@ -8,13 +8,11 @@
 
 Issue.create(
 	title: 'Issue 0',
-	datetime: DateTime.parse('2013-11-10'),
 	description: 'Jerry\'s drinking problem.'
 )
 
 Issue.create(
 	title: 'Serious Sunday Workload',
-	datetime: DateTime.now,
 	description: "Can we have Sunday off not working on anything?"
 )
 
