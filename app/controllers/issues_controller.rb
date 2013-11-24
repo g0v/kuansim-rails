@@ -1,6 +1,6 @@
 class IssuesController < ApplicationController
   require 'json'
-
+  
   def list_all_issues
     return_json = []
     Issue.find(:all).each do |issue|
