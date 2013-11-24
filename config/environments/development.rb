@@ -35,8 +35,6 @@ Kuansim::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
-  ENV['facebook_api_id'] = "586583441378799"
-  ENV['facebook_api_secret'] = "e1dfe6d6cdcd437b02cb3dd825b41bfe"
-  ENV['google_api_id'] = '497331393377.apps.googleusercontent.com'
-  ENV['google_api_secret'] = 'MQJaqejbCwK74Wq2Iq6-1Crc'
+  ENV['SECRET_TOKEN'] = "9bc4aadd96a0569e03a1e326cb70925655801869d128d8aa9c02e52f6a75eedcbc6370bb8cb35c27d4067634bd5d4ef6f5dee7b394a18d5f016fc456eed75893"
+
 end

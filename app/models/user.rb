@@ -1,6 +1,9 @@
 class User < ActiveRecord::Base
+  require 'open-uri'
+  require 'json'
+
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
+  # :confirmable, :lockable, :timeoutable an
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :omniauthable
@@ -10,24 +13,50 @@ class User < ActiveRecord::Base
   # attr_accessible :title, :body
 
   has_many :events
+  has_one :profile
+  before_create :build_default_profile
 
   # TODO: CHECK FOR MALFORMED EMAILS
   def self.find_by_provider(user_info, provider)
     raise "Invalid provider" if provider != "google" and provider != "facebook"
 
-    user = User.where(provider: provider, uid: user_info["id"]).first
-    return user if user
+    user = User.where(email: user_info["email"]).first ||
+      User.where(provider: provider, uid: user_info["id"]).first ||
+      User.create!(name: user_info["name"],
+        provider: provider,
+        uid: user_info["id"],
+        email: user_info["email"],
+        password: Devise.friendly_token[0, 20]
+      )
 
-    registered_user = User.where(email: user_info["email"]).first
-    return registered_user if registered_user
+    user.profile.image = user.image_url(user.uid, provider)
+    user.profile.save
 
+    user
+  end
 
-    User.create!(name: user_info["name"],
-      provider: provider,
-      uid: user_info["id"],
-      email: user_info["email"],
-      password: Devise.friendly_token[0, 20]
-    )
+  def image_url(user_id, provider)
+    if provider == "google"
+      google_image_url(user_id)
+    else
+      uri = URI.parse(facebook_image_url(user_id))
+      pic_info = JSON.parse(uri.read)
+      pic_info["picture"]["data"]["url"]
+    end
+  end
 
-  end  
+  private
+
+    def build_default_profile
+      build_profile
+      true
+    end
+
+    def google_image_url(id)
+      "https://plus.google.com/s2/photos/profile/#{id}?sz=100"
+    end
+
+    def facebook_image_url(id)
+      "https://graph.facebook.com/#{id}/?fields=picture.type(large)"
+    end
 end
