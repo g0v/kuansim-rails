@@ -65,6 +65,7 @@ Kuansim::Application.routes.draw do
   ############################# ISSUE #############################
   get   '/collections/issues', to: 'issues#list_all_issues'
   get   '/collections/issues/:issue_id', to: 'issues#timeline'
+  post  '/collections/issues',  to: 'issues#create'
   ############################# ISSUE #############################
 
   get   '/collections/bookmarks/:id', to: 'events#get_event'
