@@ -1,22 +1,21 @@
 class IssuesController < ApplicationController
   require 'json'
 
-  def new
-  end
-
   def create
-  end
-
-  def edit
-  end
-
-  def create
-  end
-
-  def update
-  end
-
-  def delete
+    new_issue_params[:issue]
+    json_reply = {success: true}
+    if new_issue_params.nil?
+      json_reply[:success] = false
+      json_reply[:error] = "The issue was not created. At least one field must be filled out."
+    else
+      if !current_user.nil?
+        Issue.create(new_issue_params)
+      else
+        json_reply[:success] = false
+        json_reply[:error] = "The issue was not created. You must be logged in to create a new issue."
+      end
+    end
+    render json: json_reply
   end
 
   def list_all_issues
