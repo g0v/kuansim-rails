@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
          :omniauthable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :provider, :uid, :remember_token
+  attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :provider, :uid
   # attr_accessible :title, :body
 
   has_many :events
