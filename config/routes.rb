@@ -57,7 +57,7 @@ Kuansim::Application.routes.draw do
   end
 
   post  '/users/authenticate', to: 'users#authenticate'
-  post '/users/verify', to: 'users#verify'
+  get '/users/verify', to: 'users#verify'
   post  '/collections/bookmarks', to: 'events#create'
   delete  '/collections/bookmarks/:id', to: 'events#delete'
   put '/collections/bookmarks/:id', to: 'events#update'

@@ -65,8 +65,5 @@ Kuansim::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
-  ENV['facebook_api_id'] = "498041163626572"
-  ENV['facebook_api_secret'] = "5a4c3703529f62d1d9d555960ecb5c18"
-  ENV['google_api_id'] = '497331393377-cb5di7qqi6ejvmj6if2vtubh4rafjf7m.apps.googleusercontent.com'
-  ENV['google_api_secret'] = 'VWq1Cpqs56AIniD_0O8pyafJ'
+  ENV["SECRET_TOKEN"] = "3526d8a395bd94eb7c4e73afe122edafceedad00eb0fcd48588dcdce920b5f9dd83b059b40233856f04334937e10b348a024bb4c11a1be42e42c9d3e48f3d196"
 end

@@ -9,12 +9,12 @@ class User < ActiveRecord::Base
          :omniauthable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :provider, :uid
+  attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :provider, :uid, :remember_token
   # attr_accessible :title, :body
 
   has_many :events
   has_one :profile
-  before_create :build_default_profile
+  before_create :build_default_profile, :create_remember_token
 
   # TODO: CHECK FOR MALFORMED EMAILS
   def self.find_by_provider(user_info, provider)
@@ -50,16 +50,16 @@ class User < ActiveRecord::Base
 
   private
 
-  def google_image_url(id)
-    "https://plus.google.com/s2/photos/profile/#{id}"
-  end
+    def google_image_url(id)
+      "https://plus.google.com/s2/photos/profile/#{id}"
+    end
 
-  def facebook_image_url(id)
-    "https://graph.facebook.com/#{id}/?fields=picture.type(large)"
-  end
+    def facebook_image_url(id)
+      "https://graph.facebook.com/#{id}/?fields=picture.type(large)"
+    end
 
-  def build_default_profile
-    build_profile
-    true
-  end
+    def build_default_profile
+      build_profile
+      true
+    end
 end

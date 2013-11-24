@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   require 'open-uri'
   require 'json'
+  require 'securerandom'
 
   def authenticate
     provider = params[:provider]
@@ -8,24 +9,36 @@ class UsersController < ApplicationController
     uri = URI.parse(self.send("#{provider}_info".to_sym, access_token))
     user_info = JSON.parse(uri.read)
     @user = User.find_by_provider(user_info, provider)
+    cookies.permanent.signed[:user_c] = @user.id
     login(@user.email)
   end
 
   def verify
-    email = params[:email]
-    if current_user.nil?
-      render json: {success: false, message: "No user logged in"}
-    elsif current_user.email != email
-      render json: {success: false, message: "Invalid email"}
+    user_id = cookies.signed[:user_c]
+
+    if user_id.nil?
+      render json: {success: false}
+    elsif not user_signed_in? or current_user.id != user_id
+      if user_signed_in?
+        sign_out current_user
+      end
+
+      user = User.find(user_id)
+      if user
+        sign_in user
+        render json: {success: true, email: current_user.email, name: current_user.name}
+      else
+        render json: {success: false}
+      end
     else
-      render json: {success: true}
+      render json: {success: true, email: current_user.email, name: current_user.name}
     end
+
   end
 
   def destroy_session
-    email = params[:email]
-    user = User.find_by_email(email)
-    sign_out user
+    sign_out current_user
+    cookies.delete :user_c
     render json: {success: true}
   end
 
