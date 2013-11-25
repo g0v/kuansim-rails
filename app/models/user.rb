@@ -29,19 +29,23 @@ class User < ActiveRecord::Base
         password: Devise.friendly_token[0, 20]
       )
 
-    user.profile.image = user.image_url(user.uid, provider)
+    user.profile.image = user.image_url(user_info["id"], provider)
     user.profile.save
 
     user
   end
 
   def image_url(user_id, provider)
-    if provider == "google"
-      google_image_url(user_id)
-    else
-      uri = URI.parse(facebook_image_url(user_id))
-      pic_info = JSON.parse(uri.read)
-      pic_info["picture"]["data"]["url"]
+    begin
+      if provider == "google"
+        google_image_url(user_id)
+      else
+        uri = URI.parse(facebook_image_url(user_id))
+        pic_info = JSON.parse(uri.read)
+        pic_info["picture"]["data"]["url"]
+      end
+    rescue
+      ""
     end
   end
 
