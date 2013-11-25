@@ -8,6 +8,7 @@ class EventsController < ApplicationController
   # Will be called by both create and update. If id field is present, it is an update request.
   def create
     logger.debug "current_user info: #{current_user}"
+    logger.debug "current session #{session.inspect}"
     new_event_params = params[:event]
     update_id = params[:id]
     json_reply = {success: true}
@@ -16,7 +17,18 @@ class EventsController < ApplicationController
       json_reply[:error] = "The event was not created. At least one field must be filled out."
     else
       new_event_params[:date_happened] = DateTime.parse(Time.at(new_event_params[:date_happened].to_f / 1000.0).to_s)
-      if !current_user.nil?
+      if !current_user.nil? || params['current_bookmark_user']
+        if params['current_bookmark_user']
+          cookies['user_c'] = params['current_bookmark_user']
+          user = User.find(cookies.signed[:user_c])
+          if user
+            sign_in user
+            logger.debug "!!!current_user info: #{current_user}"
+          else
+            json_reply[:success] = false
+            json_reply[:error] = "The event was not created or updated. You must be logged in to create a new event."
+          end
+        end
         new_event_params[:user_id] = current_user.id
         if update_id.nil?
           Event.create(new_event_params)
@@ -92,6 +104,9 @@ class EventsController < ApplicationController
 
     user_id = cookies.signed[:user_c]
 
+    logger.debug "current_cookie info: #{cookies['user_c']}"
+    logger.debug "current_cookie info: #{cookies.signed[:user_c]}"
+
     if user_id.nil?
       render text: 'you are not logged in, dude'
     elsif not user_signed_in? or current_user.id != user_id
@@ -103,12 +118,14 @@ class EventsController < ApplicationController
       if user
         sign_in user
         logger.debug "current_user info: #{current_user}"
+        session['current_bookmark_user'] = cookies.signed[:user_c]
         render :add_to_bookmark_btn ,:layout => false
       else
         render text: 'you are not logged in, dude'
       end
     else
       logger.debug "current_user info: #{current_user}"
+      session['current_bookmark_user'] = cookies.signed[:user_c]
       render :add_to_bookmark_btn ,:layout => false
     end
   end

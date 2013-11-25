@@ -3,29 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <title>Kuansim</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $('#save_bookmark_btn').on('click', function (e) {
+        e.preventDefault();
+        var serializedData = $('#kuansim_bookmark').serialize();
+
+        var formData = {
+          title: $('#bookmark_title').val(),
+          url: $('#bookmark_url').val(),
+          description: $('#bookmark_description').val(),
+          date_happened: Date.now(),
+          location: 'test',
+          current_bookmark_user: "<%= cookies[:user_c] %>",
+          event: {
+            title: $('#bookmark_title').val(),
+            description: $('#bookmark_description').val(),
+            date_happened: Date.now(),
+            location: 'test'
+          }
+        };
+        console.log(formData);
+        $.ajax({
+          url: '/collections/bookmarks',
+          type: 'POST',
+          xhrFields: {
+            withCredentials: true
+          },
+          dataType: 'json',
+          data: formData,
+          success: function (data, status) {
+            console.log(data);
+            console.log('saved!');
+          },
+          error: function (jqXHR, status) {
+            console.log('error!');
+          }
+        });
+      });
+    });
+  </script>
 </head>
 <body>
   <div id="kuansim">
     <div class="modal">
-      <%= form_tag '/collections/bookmarks', :method => 'post' do %>
+
+      <form id="kuansim_bookmark">
         <div class="modal-body">
-          <%= label :event, :title, 'Title' %>
-          <%= text_field :event, 'title' %>
+          <label for="bookmark_title">Title</label>
+          <input type="text" id="bookmark_title" name="bookmark_title"/>
 
-          <%= label nil, :url, 'URL' %>
-          <%= text_field nil, 'url' %>
+          <label for="bookmark_url">URL</label>
+          <input type="text" id="bookmark_url" name="bookmark_url"/>
 
-          <%= label :event, :description, 'Description' %>
-          <%= text_field :event, 'description' %>
-
-          <%= hidden_field :event, 'date_happened', :value => Time.now.to_i %>
-          <%= hidden_field :event, 'location', :value => 'none' %>
-          <%= hidden_field nil, 'from_button', :value => true %>
+          <label for="bookmark_description">Description</label>
+          <input type="text" id="bookmark_description" name="bookmark_description"/>
         </div>
         <div class="modal-footer">
-          <%= submit_tag 'Save bookmark' %>
+          <button id="save_bookmark_btn">Save bookmark</button>
         </div>
-      <% end %>
+      </form>
+
     </div>
   </div>
 </body>
