@@ -18,8 +18,8 @@ ActiveRecord::Schema.define(:version => 20131124215430) do
     t.datetime "date_happened"
     t.string   "location"
     t.text     "description"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.integer  "user_id"
     t.integer  "issue_id"
     t.string   "url"
