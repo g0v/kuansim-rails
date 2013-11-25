@@ -12,10 +12,14 @@
 # It's strongly recommended to check this file into your version control system.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ActiveRecord::Schema.define(:version => 20131124034050) do
 =======
 ActiveRecord::Schema.define(:version => 20131123221635) do
 >>>>>>> fix-event
+=======
+ActiveRecord::Schema.define(:version => 20131124234840) do
+>>>>>>> origin/create-issue
 
   create_table "events", :force => true do |t|
     t.string   "title"
@@ -24,20 +28,30 @@ ActiveRecord::Schema.define(:version => 20131123221635) do
     t.text     "description"
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
+<<<<<<< HEAD
     t.integer  "issue_id"
 <<<<<<< HEAD
-    t.integer  "user_id"
 =======
+>>>>>>> origin/create-issue
+    t.integer  "user_id"
+    t.integer  "issue_id"
     t.string   "url"
+<<<<<<< HEAD
 >>>>>>> fix-event
+=======
+>>>>>>> origin/create-issue
   end
 
   create_table "issues", :force => true do |t|
     t.string   "title"
-    t.string   "datetime"
     t.text     "description"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+  end
+
+  create_table "moderators", :force => true do |t|
+    t.integer "issues_id"
+    t.integer "users_id"
   end
 
   create_table "profiles", :force => true do |t|
