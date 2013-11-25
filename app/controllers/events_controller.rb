@@ -1,10 +1,13 @@
 require 'json'
 require 'date'
+require 'net/http' # for handling request
+require 'uri'
 
 class EventsController < ApplicationController
 
   # Will be called by both create and update. If id field is present, it is an update request.
   def create
+    logger.debug "current_user info: #{current_user}"
     new_event_params = params[:event]
     update_id = params[:id]
     json_reply = {success: true}
@@ -47,7 +50,7 @@ class EventsController < ApplicationController
         json_reply[:error] = "The event was not deleted. You must be logged in."
       elsif !current_user.events.include? Event.find(delete_id)
         json_reply[:success] = false
-        json_reply[:error] = "The event was not deleted. You must own this event."  
+        json_reply[:error] = "The event was not deleted. You must own this event."
       else
         Event.delete(delete_id)
       end
@@ -82,6 +85,32 @@ class EventsController < ApplicationController
     end
     json_reply[:events] = events_list
     render json: json_reply
+  end
+
+  def add_to_bookmark_btn
+    # This fn deals with external `add to bookmark` button view request
+
+    user_id = cookies.signed[:user_c]
+
+    if user_id.nil?
+      render text: 'you are not logged in, dude'
+    elsif not user_signed_in? or current_user.id != user_id
+      if user_signed_in?
+        sign_out current_user
+      end
+
+      user = User.find(user_id)
+      if user
+        sign_in user
+        logger.debug "current_user info: #{current_user}"
+        render :add_to_bookmark_btn ,:layout => false
+      else
+        render text: 'you are not logged in, dude'
+      end
+    else
+      logger.debug "current_user info: #{current_user}"
+      render :add_to_bookmark_btn ,:layout => false
+    end
   end
 
   def update

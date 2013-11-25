@@ -72,6 +72,10 @@ Kuansim::Application.routes.draw do
 
   get   '/collections/bookmarks/:id', to: 'events#get_event'
 
+  ###################### ADD TO BOOKMARK BTN ######################
+  get   '/bookmarks/save', to: 'events#add_to_bookmark_btn'
+  ###################### ADD TO BOOKMARK BTN ######################
+
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.

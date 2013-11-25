@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kuansim</title>
+</head>
+<body>
+  <div id="kuansim">
+    <div class="modal">
+      <%= form_tag '/collections/bookmarks', :method => 'post' do %>
+        <div class="modal-body">
+          <%= label :event, :title, 'Title' %>
+          <%= text_field :event, 'title' %>
+
+          <%= label nil, :url, 'URL' %>
+          <%= text_field nil, 'url' %>
+
+          <%= label :event, :description, 'Description' %>
+          <%= text_field :event, 'description' %>
+
+          <%= hidden_field :event, 'date_happened', :value => Time.now.to_i %>
+          <%= hidden_field :event, 'location', :value => 'none' %>
+          <%= hidden_field nil, 'from_button', :value => true %>
+        </div>
+        <div class="modal-footer">
+          <%= submit_tag 'Save bookmark' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</body>
+</html>
