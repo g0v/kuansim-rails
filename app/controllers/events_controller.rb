@@ -104,8 +104,10 @@ class EventsController < ApplicationController
 
     user_id = cookies.signed[:user_c]
 
-    logger.debug "current_cookie info: #{cookies['user_c']}"
-    logger.debug "current_cookie info: #{cookies.signed[:user_c]}"
+    # logger.debug "current_cookie info: #{cookies['user_c']}"
+    # logger.debug "current_cookie info: #{cookies.signed[:user_c]}"
+
+    logger.debug "RENDERED! => #{params}"
 
     if user_id.nil?
       render text: 'you are not logged in, dude'
