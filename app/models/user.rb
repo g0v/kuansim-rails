@@ -14,7 +14,6 @@ class User < ActiveRecord::Base
 
   has_many :events
   has_one :profile
-  has_and_belongs_to_many :issues
   before_create :build_default_profile
 
   # TODO: CHECK FOR MALFORMED EMAILS
