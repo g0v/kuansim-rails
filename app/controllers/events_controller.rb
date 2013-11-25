@@ -7,8 +7,6 @@ class EventsController < ApplicationController
 
   # Will be called by both create and update. If id field is present, it is an update request.
   def create
-    logger.debug "current_user info: #{current_user}"
-    logger.debug "current session #{session.inspect}"
     new_event_params = params[:event]
     update_id = params[:id]
     json_reply = {success: true}
@@ -23,7 +21,6 @@ class EventsController < ApplicationController
           user = User.find(cookies.signed[:user_c])
           if user
             sign_in user
-            logger.debug "!!!current_user info: #{current_user}"
           else
             json_reply[:success] = false
             json_reply[:error] = "The event was not created or updated. You must be logged in to create a new event."
@@ -104,13 +101,8 @@ class EventsController < ApplicationController
 
     user_id = cookies.signed[:user_c]
 
-    # logger.debug "current_cookie info: #{cookies['user_c']}"
-    # logger.debug "current_cookie info: #{cookies.signed[:user_c]}"
-
-    logger.debug "RENDERED! => #{params}"
-
     if user_id.nil?
-      render text: 'you are not logged in, dude'
+      render :add_to_bookmark_btn ,:layout => false
     elsif not user_signed_in? or current_user.id != user_id
       if user_signed_in?
         sign_out current_user
@@ -119,14 +111,12 @@ class EventsController < ApplicationController
       user = User.find(user_id)
       if user
         sign_in user
-        logger.debug "current_user info: #{current_user}"
         session['current_bookmark_user'] = cookies.signed[:user_c]
         render :add_to_bookmark_btn ,:layout => false
       else
-        render text: 'you are not logged in, dude'
+        render :add_to_bookmark_btn ,:layout => false
       end
     else
-      logger.debug "current_user info: #{current_user}"
       session['current_bookmark_user'] = cookies.signed[:user_c]
       render :add_to_bookmark_btn ,:layout => false
     end

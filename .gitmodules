@@ -1,4 +1,4 @@
 [submodule "kuansim-frontend"]
 	path = kuansim-frontend
 	url = git://github.com/g0v/kuansim-frontend.git
-  	branch = cal
+  branch = cal
