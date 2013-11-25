@@ -1,7 +1,5 @@
 class IssuesController < ApplicationController
   require 'json'
-<<<<<<< HEAD
-
   def new
   end
 
@@ -20,9 +18,6 @@ class IssuesController < ApplicationController
   def delete
   end
 
-=======
-  
->>>>>>> fix-event
   def list_all_issues
     return_json = []
     Issue.find(:all).each do |issue|
