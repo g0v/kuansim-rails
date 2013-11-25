@@ -99,16 +99,16 @@ class EventsController < ApplicationController
   def add_to_bookmark_btn
     # This fn deals with external `add to bookmark` button view request
 
-    user_id = cookies.signed[:user_c]
+    @user_id = cookies.signed[:user_c]
 
-    if user_id.nil?
+    if @user_id.nil?
       render :add_to_bookmark_btn ,:layout => false
-    elsif not user_signed_in? or current_user.id != user_id
+    elsif not user_signed_in? or current_user.id != @user_id
       if user_signed_in?
         sign_out current_user
       end
 
-      user = User.find(user_id)
+      user = User.find(@user_id)
       if user
         sign_in user
         session['current_bookmark_user'] = cookies.signed[:user_c]
