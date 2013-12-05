@@ -15,26 +15,19 @@ class UsersController < ApplicationController
     login(@user.email)
   end
 
+  # Thanks to try_cookie_login before filter in application controller
+  # it already tried to log in with the cookie, so just check if there is
+  # a user logged in and return the username
   def verify
-    user_id = cookies.signed[:user_c]
+    success = user_signed_in?
+    name = (success) ? current_user.name : ""
+    email = (success) ? current_user.email : ""
 
-    if user_id.nil?
-      render json: {success: false}
-    elsif not user_signed_in? or current_user.id != user_id
-      if user_signed_in?
-        sign_out current_user
-      end
-
-      user = User.find(user_id)
-      if user
-        sign_in user
-        render json: {success: true, email: current_user.email, name: current_user.name}
-      else
-        render json: {success: false}
-      end
-    else
-      render json: {success: true, email: current_user.email, name: current_user.name}
-    end
+    render json: {
+      success: success,
+      name: name,
+      email: email
+    }
 
   end
 
