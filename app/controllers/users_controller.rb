@@ -3,7 +3,8 @@ class UsersController < ApplicationController
   require 'json'
 
   skip_before_filter :require_login, except: [:follow_issue, :follows_issue?]
-  skip_before_filter :need_id_param, except: [:follow_issue]
+
+  before_filter :need_id, only: [:follow_issue, :follows_issue?]
 
   # Going to set user image each login (in case image changes)
   def authenticate
@@ -36,7 +37,7 @@ class UsersController < ApplicationController
     issue = Issue.find(params[:id])
     if issue
       followed_issues = current_user.followed_issues
-      followed_issues << issue unless followed_issues.include?(issue)
+      followed_issues << issue
       render json: { success: true }
     else
       render json: {
@@ -49,7 +50,7 @@ class UsersController < ApplicationController
   def follows_issue?
     render json: {
       success: true,
-      follows: current_user.followed_issues.include?(Issue.find(params[:id]))
+      follows: current_user.follows_issue?(Issue.find(params[:id]))
     }
   end
 

@@ -28,6 +28,7 @@ describe EventsController do
     it 'should create a new event' do
       user = FactoryGirl.create(:user)
       sign_in user
+      event = FactoryGirl.create(:event)
       fake_data = {"event" => {
                     "title" => 'Bart Strike',
                     "location" => 'San Francisco, CA',
@@ -38,9 +39,11 @@ describe EventsController do
                        "description" => "This is a horrible event!",
                        "date_happened" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
                        "user_id" => user.id}
-      Event.should_receive(:create).with(fake_mod_data)
+      Event.should_receive(:create).with(fake_data["event"]).and_return(event)
       post :create, fake_data
+      response.body.should have_content "true"
     end
+
     it 'should not create a new event if no params are supplied' do
       Event.should_not_receive(:create)
       post :create
@@ -60,10 +63,11 @@ describe EventsController do
       event = FactoryGirl.create(:event)
       user = FactoryGirl.create(:user, events: [event])
       sign_in user
+      controller.current_user.stub(:has_event?) { true }
       Event.stub(:find) {event}
-      Event.should_receive(:find).with(event.id)
-      Event.should_receive(:delete).with(event.id)
+      Event.should_receive(:delete)
       delete :delete, {:id => event.id}
+      response.body.should have_content "true"
     end
     it 'should not delete the selected event if the user is not logged in' do
       Event.should_not_receive(:delete)
@@ -74,7 +78,6 @@ describe EventsController do
       user = FactoryGirl.create(:user)
       sign_in user
       Event.stub(:find) {event}
-      Event.should_receive(:find).with(event.id)
       Event.should_not_receive(:delete)
       delete :delete, {:id => event.id}
     end
@@ -115,21 +118,23 @@ describe EventsController do
       put :update, fake_data
     end
   end
+
   describe 'get_events' do
     it 'should get a list of all events' do
       Event.should_receive(:all)
       get :get_events
     end
+
     it 'should not get a list of events if the limit param is not an integer' do
-      Event.should_not_receive(:all)
-      Event.should_not_receive(:take)
       get :get_events, {:limit => "not an integer"}
+      response.body.should have_content "[]"
     end
+
     it 'should get a list with a limited number of events' do
-      Event.should_receive(:take)
-      Event.should_not_receive(:all)
+      Event.should_receive(:limit).with("5")
       get :get_events, {:limit => 5}
     end
+
   end
 
   describe "Bookmarklet view render" do

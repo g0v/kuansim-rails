@@ -3,6 +3,8 @@ class IssuesController < ApplicationController
 
   skip_before_filter :require_login, except: [:create, :delete, :update]
 
+  before_filter :need_id, only: [:delete, :update, :related]
+
   before_filter lambda { issue_belongs(params[:id]) },
     only: [:delete, :update]
 
@@ -35,6 +37,17 @@ class IssuesController < ApplicationController
       success: success,
       message: message
     }
+  end
+
+  # Return up to 5 "related" issues
+  # For now is suppperrrr slow but w/e xD
+  def related
+    issue = Issue.includes(:events).find(params[:id])
+    other_issues = Issue.includes(:events).where('id != ?', params[:id])
+    issue_counts = {}
+    other_issues.each do |other_issue|
+
+    end
   end
 
   def list_all_issues

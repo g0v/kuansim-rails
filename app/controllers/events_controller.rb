@@ -5,11 +5,15 @@ require 'uri'
 
 class EventsController < ApplicationController
 
+  skip_before_filter :require_login, only: [:get_event, :get_events]
+
+  # Check that params[:id] exists using function from ApplicationController
+  before_filter :need_id, only: [:delete, :show, :update]
+
   # Use lambda to allow params[:id] argument
   before_filter lambda { event_belongs(params[:id]) },
-    except: [:create, :get_event, :get_events,]
+    only: [:update, :delete]
 
-  # Will be called by both create and update. If id field is present, it is an update request.
   def create
     event_params = params[:event]
     event = Event.create(event_params)
@@ -22,8 +26,9 @@ class EventsController < ApplicationController
       return
     end
 
+    issues = params[:issues] || []
     # Associate chosen issues represented by array of issue_ids
-    params[:issues].each do |issue_id|
+    issues.each do |issue_id|
       event.issues << Issue.find(issue_id)
     end
 
@@ -35,24 +40,8 @@ class EventsController < ApplicationController
   end
 
   def delete
-    json_reply = {success: true}
-    delete_id = params[:id]
-    if params[:id].nil?
-      json_reply[:success] = false
-      json_reply[:error] = "The event was not deleted. You must select an event first."
-    else
-      delete_id = delete_id.to_i
-      if current_user.nil?
-        json_reply[:success] = false
-        json_reply[:error] = "The event was not deleted. You must be logged in."
-      elsif !current_user.events.include? Event.find(delete_id)
-        json_reply[:success] = false
-        json_reply[:error] = "The event was not deleted. You must own this event."
-      else
-        Event.delete(delete_id)
-      end
-    end
-    render json: json_reply
+    Event.delete(params[:id])
+    render json: {success: true}
   end
 
   def get_event
@@ -69,19 +58,20 @@ class EventsController < ApplicationController
   end
 
   def get_events
-    json_reply = {success: true}
-    limit = params[:limit]
-    events_list = []
-    if limit.nil?
-      events_list = Event.all
-    elsif limit != "0" && limit.to_i == 0
-      json_reply[:success] = false
-      json_reply[:error] = "The events were not returned. Param id must be an integer."
+    limit = params[:limit] || "all"
+    event_list = case limit
+    when "all"
+      Event.all
+    when /^[-+]?[0-9]+$/
+      Event.limit(limit)
     else
-      events_list = Event.take(limit.to_i)
+      []
     end
-    json_reply[:events] = events_list
-    render json: json_reply
+
+    render json: {
+      success: true,
+      events: event_list
+    }
   end
 
   def add_to_bookmark_btn

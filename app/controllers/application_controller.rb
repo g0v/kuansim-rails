@@ -34,4 +34,14 @@ class ApplicationController < ActionController::Base
       super || form_authenticity_token == request.headers['X-XSRF-TOKEN']
     end
 
+    def need_id
+      if params[:id].nil?
+        render json: {
+          success: false,
+          message: "Id param cannot be nil"
+        }
+        return false
+      end
+    end
+
 end
