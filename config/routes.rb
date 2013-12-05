@@ -85,6 +85,10 @@ Kuansim::Application.routes.draw do
   # root :to => redirect('/index.html')
   # root :to => 'static#show'
 
+  # Have a controller just to render index.html so that
+  # the ApplicationController CSRF logic is set off
+  root :to => 'home#home'
+
   # See how all your routes lay out with "rake routes"
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.

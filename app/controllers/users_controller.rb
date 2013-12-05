@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   require 'open-uri'
   require 'json'
 
-  before_filter :require_login, only: [:follow_issue, :follows_issue?]
+  skip_before_filter :require_login, except: [:follow_issue, :follows_issue?]
 
   # Going to set user image each login (in case image changes)
   def authenticate
@@ -78,17 +78,10 @@ class UsersController < ApplicationController
   end
 
   def current_profile
-    if not user_signed_in?
-      render json: {
-        success: false,
-        message: "No user logged in"
-      }
-    else
-      render json: {
-        success: true,
-        profile: current_user.profile.to_hash
-      }
-    end
+    render json: {
+      success: true,
+      profile: current_user.profile.to_hash
+    }
   end
 
   def google_info(access_token)

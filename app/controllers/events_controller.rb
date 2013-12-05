@@ -5,11 +5,15 @@ require 'uri'
 
 class EventsController < ApplicationController
 
+  before_filter lambda { event_belongs(params[:id]) },
+    except: [:create, :get_event, :get_events,]
+
   # Will be called by both create and update. If id field is present, it is an update request.
   def create
     new_event_params = params[:event]
     update_id = params[:id]
     json_reply = {success: true}
+    event = nil
     if new_event_params.nil?
       json_reply[:success] = false
       json_reply[:message] = "The event was not created. At least one field must be filled out."
@@ -45,6 +49,14 @@ class EventsController < ApplicationController
         json_reply[:message] = "The event was not created or updated. You must be logged in to create a new event."
       end
     end
+
+    if not event.nil?
+      new_event_params[:issues].each do |issue|
+        event.issues << issue
+      end
+      event.save
+    end
+
     render json: json_reply
   end
 
@@ -132,6 +144,16 @@ class EventsController < ApplicationController
   end
 
   def new
+  end
+
+  def event_belongs(event_id)
+    event = Event.find(event_id)
+    unless current_user.events.include?(event)
+      render json: {
+        success: false,
+        message: "You don't have permission to edit this event"
+      }
+    end
   end
 
 end
