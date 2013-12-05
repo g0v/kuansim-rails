@@ -3,4 +3,7 @@ class Issue < ActiveRecord::Base
   has_and_belongs_to_many :events
   belongs_to :user
   has_and_belongs_to_many :followers, class_name: "User", join_table: 'users_issues'
+
+  validates :title, presence: true
+  validates :description, presence: true
 end

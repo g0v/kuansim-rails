@@ -3,6 +3,7 @@ class UsersController < ApplicationController
   require 'json'
 
   skip_before_filter :require_login, except: [:follow_issue, :follows_issue?]
+  skip_before_filter :need_id_param, except: [:follow_issue]
 
   # Going to set user image each login (in case image changes)
   def authenticate
