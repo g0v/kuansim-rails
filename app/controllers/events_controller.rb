@@ -111,7 +111,7 @@ class EventsController < ApplicationController
   end
 
   def update
-    event = Event.find(params[:id]).update(params[:event])
+    event = Event.find(params[:id]).update_attributes(params[:event])
     if event.invalid?
       field, messages = event.errors.messages.first
       render json: {
@@ -134,12 +134,13 @@ class EventsController < ApplicationController
 
     def event_belongs(event_id)
       event = Event.find(event_id)
-      unless current_user.events.include?(event)
+      unless current_user.has_event?(event)
         render json: {
           success: false,
           message: "You don't have permission to edit this event"
         }
       end
+      return false
     end
 
 end

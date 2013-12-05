@@ -1,6 +1,11 @@
 class IssuesController < ApplicationController
   require 'json'
 
+  skip_before_filter :require_login, except: [:create, :delete, :update]
+
+  before_filter lambda { issue_belongs(params[:id]) },
+    only: [:delete, :update]
+
   def create
     issue = Issue.create(params[:issue])
     if issue.valid?
@@ -17,25 +22,12 @@ class IssuesController < ApplicationController
   end
 
   def delete
-    json_reply = {success: true}
-    delete_id = params[:id]
-    if params[:id].nil?
-      json_reply[:success] = false
-      json_reply[:error] = "The issue was not deleted. You must select an issue first."
-    else
-      delete_id = delete_id.to_i
-      if current_user.nil?
-        json_reply[:success] = false
-        json_reply[:error] = "The issue was not deleted. You must be logged in."
-      else
-        Issue.delete(delete_id)
-      end
-    end
-    render json: json_reply
+    Issue.delete(params[:id])
+    render json: { success: true}
   end
 
   def update
-    issue = Issue.find(params[:id]).update(params[:issue])
+    issue = Issue.find(params[:id]).update_attributes(params[:issue])
     success = issue.valid?
     field, messages = issue.errors.messages.first
     message = (success) ? "" : "#{field} #{messages.first}"
@@ -92,5 +84,18 @@ class IssuesController < ApplicationController
       }
     }
   end
+
+  private
+
+    def issue_belongs(issue_id)
+      issue = Issue.find(issue_id)
+      unless current_user.has_issue?(issue)
+        render json: {
+          success: false,
+          message: "You don't have permission to edit this issue"
+        }
+        return false
+      end
+    end
 
 end

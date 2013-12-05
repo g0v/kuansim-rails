@@ -80,6 +80,7 @@ describe EventsController do
     end
   end
   describe 'update' do
+
     it 'should update the selected event' do
       user = FactoryGirl.create(:user)
       sign_in user
@@ -95,12 +96,12 @@ describe EventsController do
                        "description" => "This is a horrible event!",
                        "date_happened" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
                        "user_id" => user.id}
-      Event.stub(:find) {event}
-      Event.should_receive(:find).with(event.id)
-      event.should_receive(:update_attributes).with(fake_mod_data)
-      put :update, fake_data
-      puts response.body
+      # event.should_receive(:update_attributes).and_return(event)
+      Event.stub(:find).twice.and_return(event)
+      post :update, fake_data
+      response.body.should have_content "success"
     end
+
     it 'should not update a new event if the event does not exist' do
       event = FactoryGirl.create(:event)
       Event.stub(:find) {event}

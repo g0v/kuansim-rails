@@ -4,14 +4,17 @@ describe IssuesController do
     describe 'create' do
     it 'should create a new issue' do
       user = FactoryGirl.create(:user)
+      user.stub(:has_issue?) { true }
+      issue = FactoryGirl.create(:issue)
       sign_in user
       fake_data = {"issue" => {
                     "title" => 'Bart Strike',
                     "description" => "Renegotiating employee contract."}}
       fake_mod_data = {"title" => 'Bart Strike',
                        "description" => "Renegotiating employee contract."}
-      Issue.should_receive(:create).with(fake_mod_data)
+      Issue.should_receive(:create).with(fake_mod_data).and_return(issue)
       post :create, fake_data
+      response.body.should have_content "success"
     end
 
     it 'should not create a new issue if no params are supplied' do
@@ -24,10 +27,11 @@ describe IssuesController do
     it 'should delete the selected issue' do
       user = FactoryGirl.create(:user)
       sign_in user
+      controller.current_user.stub(:has_issue?) { true }
       issue = FactoryGirl.create(:issue)
-      Issue.should_receive(:delete).with(issue.id)
+      Issue.should_receive(:delete).with(issue.id.to_s)
       delete :delete, {:id => issue.id}
-      puts response.body
+      response.body.should have_content "true"
     end
   end
 
@@ -35,6 +39,7 @@ describe IssuesController do
     it 'should update the selected issue' do
       user = FactoryGirl.create(:user)
       sign_in user
+      controller.current_user.stub(:has_issue?).and_return(true)
       issue = FactoryGirl.create(:issue)
       fake_data = {"id" => issue.id,
               "issue" => {
@@ -43,9 +48,9 @@ describe IssuesController do
       fake_mod_data = {"title" => 'Bart Strike',
                        "description" => "Renegotiating employee contract."}
       Issue.stub(:find) {issue}
-      Issue.should_receive(:find).with(issue.id)
-      issue.should_receive(:update_attributes).with(fake_mod_data)
+      issue.should_receive(:update_attributes).with(fake_mod_data).and_return(issue)
       put :update, fake_data
+      response.body.should have_content "true"
     end
 
     it 'should not update a new issue if the issue does not exist' do

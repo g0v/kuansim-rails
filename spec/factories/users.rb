@@ -1,6 +1,7 @@
 FactoryGirl.define do
 
   factory :user do
+    id 1
     name "Test Guy"
     email "dont@mail.me"
     password "gaayyyyyyyyyaayaya"
@@ -9,6 +10,7 @@ FactoryGirl.define do
   end
 
   factory :user_facebook, :class => User do
+    id 2
     name "Test Facebook Guy"
     email "dont123@mail.me"
     password "gaayyyyyyyyyaayaya"
@@ -17,6 +19,7 @@ FactoryGirl.define do
   end
 
   factory :user_google, :class => User do
+    id 3
     name "Test Google Guy"
     email "dont4556@mail.me"
     password "gaayyyyyyyyyaayaya"

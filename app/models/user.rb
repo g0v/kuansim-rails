@@ -52,6 +52,14 @@ class User < ActiveRecord::Base
     end
   end
 
+  def has_event?(event)
+    self.events.include?(event)
+  end
+
+  def has_issue?(issue)
+    self.issues.include?(issue)
+  end
+
   private
 
     def build_default_profile
