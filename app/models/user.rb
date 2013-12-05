@@ -13,8 +13,11 @@ class User < ActiveRecord::Base
   # attr_accessible :title, :body
 
   has_many :events
+  has_many :issues
   has_one :profile
   before_create :build_default_profile
+
+  has_and_belongs_to_many :followed_issues, class_name: "Issue", join_table: 'users_issues'
 
   # TODO: CHECK FOR MALFORMED EMAILS
   def self.find_by_provider(user_info, provider)
