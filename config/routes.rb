@@ -61,6 +61,8 @@ Kuansim::Application.routes.draw do
   put '/collections/bookmarks/:id', to: 'events#update'
   get   '/collections/bookmarks', to: 'events#get_events'
   get  '/users/sign_out', to: 'users#destroy_session'
+  post '/users/issues/follow', to: 'users#follow_issue'
+  get '/users/issues/:id/follows', to: 'users#follows_issue?'
 
   ############################# ISSUE #############################
   get   '/collections/issues', to: 'issues#list_all_issues'

@@ -2,6 +2,8 @@ class UsersController < ApplicationController
   require 'open-uri'
   require 'json'
 
+  before_filter :require_login, only: [:follow_issue, :follows_issue?]
+
   # Going to set user image each login (in case image changes)
   def authenticate
     provider = params[:provider]
@@ -34,6 +36,27 @@ class UsersController < ApplicationController
       render json: {success: true, email: current_user.email, name: current_user.name}
     end
 
+  end
+
+  def follow_issue
+    issue = Issue.find(params[:id])
+    if issue
+      followed_issues = current_user.followed_issues
+      followed_issues << issue unless followed_issues.include?(issue)
+      render json: { success: true }
+    else
+      render json: {
+        success: false,
+        message: "Cannot follow nonexistent issue"
+      }
+    end
+  end
+
+  def follows_issue?
+    render json: {
+      success: true,
+      follows: current_user.followed_issues.include?(Issue.find(params[:id]))
+    }
   end
 
   def destroy_session
@@ -76,4 +99,16 @@ class UsersController < ApplicationController
     "https://graph.facebook.com/me?access_token=#{access_token}"
   end
 
+  private
+
+    def require_login
+      if not user_signed_in?
+        render json: {
+          success: false,
+          message: "No user logged in"
+        }
+        return false
+      end
+      true
+    end
 end
