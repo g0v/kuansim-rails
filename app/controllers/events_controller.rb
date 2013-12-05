@@ -12,7 +12,7 @@ class EventsController < ApplicationController
     json_reply = {success: true}
     if new_event_params.nil?
       json_reply[:success] = false
-      json_reply[:error] = "The event was not created. At least one field must be filled out."
+      json_reply[:message] = "The event was not created. At least one field must be filled out."
     else
       new_event_params[:date_happened] = DateTime.parse(Time.at(new_event_params[:date_happened].to_f / 1000.0).to_s)
       if !current_user.nil? || params['current_bookmark_user']
@@ -23,24 +23,26 @@ class EventsController < ApplicationController
             sign_in user
           else
             json_reply[:success] = false
-            json_reply[:error] = "The event was not created or updated. You must be logged in to create a new event."
+            json_reply[:message] = "The event was not created or updated. You must be logged in to create a new event."
           end
         end
         new_event_params[:user_id] = current_user.id
         if update_id.nil?
           Event.create(new_event_params)
+          json_reply[:message] = "The event was created."
         else
           event_id = update_id.to_i
           if Event.find(event_id).nil?
             json_reply[:success] = false
-            json_reply[:error] = "The event was not updated. The given id does not match any existing event."
+            json_reply[:message] = "The event was not updated. The given id does not match any existing event."
           else
             Event.find(event_id).update_attributes(new_event_params)
+            json_reply[:message] = "The event was updated."
           end
         end
       else
         json_reply[:success] = false
-        json_reply[:error] = "The event was not created or updated. You must be logged in to create a new event."
+        json_reply[:message] = "The event was not created or updated. You must be logged in to create a new event."
       end
     end
     render json: json_reply
@@ -51,17 +53,18 @@ class EventsController < ApplicationController
     delete_id = params[:id]
     if params[:id].nil?
       json_reply[:success] = false
-      json_reply[:error] = "The event was not deleted. You must select an event first."
+      json_reply[:message] = "The event was not deleted. You must select an event first."
     else
       delete_id = delete_id.to_i
       if current_user.nil?
         json_reply[:success] = false
-        json_reply[:error] = "The event was not deleted. You must be logged in."
+        json_reply[:message] = "The event was not deleted. You must be logged in."
       elsif !current_user.events.include? Event.find(delete_id)
         json_reply[:success] = false
-        json_reply[:error] = "The event was not deleted. You must own this event."
+        json_reply[:message] = "The event was not deleted. You must own this event."
       else
         Event.delete(delete_id)
+        json_reply[:message] = "The event was deleted."
       end
     end
     render json: json_reply
@@ -72,10 +75,11 @@ class EventsController < ApplicationController
     event_id = params[:id].to_i
     if event_id.nil?
       json_reply[:success] = false
-      json_reply[:error] = "The event was not returned. Param id is required."
+      json_reply[:message] = "The event was not returned. Param id is required."
     else
       ret_event_json = Event.find(event_id).as_json
       json_reply[:event] = ret_event_json
+      json_reply[:message] = 'The event was returned.'
     end
     render json: json_reply
   end
@@ -88,9 +92,10 @@ class EventsController < ApplicationController
       events_list = Event.all
     elsif limit != "0" && limit.to_i == 0
       json_reply[:success] = false
-      json_reply[:error] = "The events were not returned. Param id must be an integer."
+      json_reply[:message] = "The events were not returned. Param id must be an integer."
     else
       events_list = Event.take(limit.to_i)
+      json_reply[:message] = "The events were returned."
     end
     json_reply[:events] = events_list
     render json: json_reply

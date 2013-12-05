@@ -7,23 +7,25 @@ class IssuesController < ApplicationController
     json_reply = {success: true}
     if new_issue_params.nil?
       json_reply[:success] = false
-      json_reply[:error] = "The issue was not created. At least one field must be filled out."
+      json_reply[:message] = "The issue was not created. At least one field must be filled out."
     else
       if !current_user.nil?
         if update_id.nil?
           Issue.create(new_issue_params)
+          json_reply[:message] = "The issue was created."
         else
           issue_id = update_id.to_i
           if Issue.find(issue_id).nil?
             json_reply[:success] = false
-            json_reply[:error] = "The issue was not updated. The given id does not match any existing issue."
+            json_reply[:message] = "The issue was not updated. The given id does not match any existing issue."
           else
             Issue.find(issue_id).update_attributes(new_issue_params)
+            json_reply[:message] = "The issue was updated."
           end
         end
       else
         json_reply[:success] = false
-        json_reply[:error] = "The issue was not created. You must be logged in to create a new issue."
+        json_reply[:message] = "The issue was not created. You must be logged in to create a new issue."
       end
     end
     render json: json_reply
@@ -34,14 +36,15 @@ class IssuesController < ApplicationController
     delete_id = params[:id]
     if params[:id].nil?
       json_reply[:success] = false
-      json_reply[:error] = "The issue was not deleted. You must select an issue first."
+      json_reply[:message] = "The issue was not deleted. You must select an issue first."
     else
       delete_id = delete_id.to_i
       if current_user.nil?
         json_reply[:success] = false
-        json_reply[:error] = "The issue was not deleted. You must be logged in."
+        json_reply[:message] = "The issue was not deleted. You must be logged in."
       else
         Issue.delete(delete_id)
+        json_reply[:message] = "The issue was deleted."
       end
     end
     render json: json_reply
@@ -49,6 +52,20 @@ class IssuesController < ApplicationController
 
   def update
     create
+  end
+
+  def get_issue
+    json_reply = {success: true}
+    issue_id = params[:id].to_i
+    if issue_id.nil?
+      json_reply[:success] = false
+      json_reply[:message] = "The event was not returned. Param id is required."
+    else
+      ret_issue_json = Issue.find(issue_id).as_json
+      json_reply[:issue] = ret_issue_json
+      json_reply[:message] = "The event was returned."
+    end
+    render json: json_reply
   end
 
   def list_all_issues
