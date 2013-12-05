@@ -70,10 +70,32 @@ describe UsersController do
   end
 
   describe "get_user_events_by_issue" do
-    it "should not return events if user is not logged in" do
-      
+    before :each do
+      @power_user = FactoryGirl.create(:power_user)
+      @events = []
+      (0..2).each do
+        event = FactoryGirl.create(:event)
+        event.user = @power_user
+        @events << event
+      end
+      @issue = FactoryGirl.create(:issue)
+      @events[0].issues << @issue
+      @user.events << @events
+      sign_in @user
     end
 
-  end
+    it "should not return events if either param is not an integer" do
+      User.should_not_receive(:find)
+      Issue.should_not_receive(:find)
+      get :get_user_events_by_issue, {:id => "not an int", :issue_id => @issue.id}
+      response.body.should have_content("false")
+    end
 
+    it "should return events if params are integers" do
+      User.stub(:find).and_return(@power_user)
+      Issue.stub(:find).and_return(@issue)
+      get :get_user_events_by_issue, {:id => @power_user.id, :issue_id => @issue.id}
+      response.body.should have_content("true")
+    end
+  end
 end
