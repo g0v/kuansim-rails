@@ -3,6 +3,7 @@ require 'spec_helper'
 describe UsersController do
 
   before :each do
+    @user = FactoryGirl.create(:user)
     @user_goog = FactoryGirl.create(:user_google)
     @user_face = FactoryGirl.create(:user_facebook)
     @request.env["devise.mapping"] = Devise.mappings[:user]
@@ -64,6 +65,13 @@ describe UsersController do
       cookies.stub(:signed).and_return({user_c: @user_goog.id})
       get :verify
       response.body.should have_content("true")
+    end
+
+  end
+
+  describe "get_user_events_by_issue" do
+    it "should not return events if user is not logged in" do
+      
     end
 
   end

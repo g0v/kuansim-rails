@@ -99,6 +99,27 @@ class UsersController < ApplicationController
     "https://graph.facebook.com/me?access_token=#{access_token}"
   end
 
+  def get_user_events_by_issue
+    json_reply = {success: true}
+    events = []
+    if user_signed_in
+      u_id = params[:id]
+      i_id = params[:issue_id]
+      if u_id.nil? or i_id.nil?
+        json_reply[:success] = false
+        json_reply[:message] = "A user_id and issue_id must be provided."
+      else
+        events = User.find(u_id).events.select{ |e| e.issues.include?(Issue.find(i_id)) }
+        json_reply[:message] = "Events of the given user that are associated with the given issue were returned."
+      end
+    else
+      json_reply[:success] = false
+      json_reply[:message] = "You must be signed in to use this functionality."
+    end
+    json_reply[:events] = events
+    render json: json_reply
+  end
+
   private
 
     def require_login
