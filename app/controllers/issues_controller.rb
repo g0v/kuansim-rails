@@ -26,7 +26,7 @@ class IssuesController < ApplicationController
 
   def delete
     Issue.delete(params[:id])
-    render json: { success: true}
+    render json: { success: true }
   end
 
   def update

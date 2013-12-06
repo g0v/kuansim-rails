@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   require 'open-uri'
   require 'json'
 
-  skip_before_filter :require_login, except: [:follow_issue, :follows_issue?]
+  skip_before_filter :require_login, except: [:follow_issue, :follows_issue?, :get_user_events_by_issue]
 
   skip_before_filter :try_cookie_login, only: [:authenticate, :login]
 
@@ -89,4 +89,35 @@ class UsersController < ApplicationController
     "https://graph.facebook.com/me?access_token=#{access_token}"
   end
 
+  def get_user_events_by_issue
+    json_reply = {success: true}
+    events = []
+    u_id = params[:id]
+    i_id = params[:issue_id]
+    if !is_int? u_id or !is_int? i_id
+      json_reply[:success] = false
+      json_reply[:message] = "A user_id and issue_id must be provided."
+    else
+      events = User.find(u_id).events.select{ |e| e.issues.include?(Issue.find(i_id)) }
+      json_reply[:message] = "Events of the given user that are associated with the given issue were returned."
+    end
+    json_reply[:events] = events
+    render json: json_reply
+  end
+
+  private
+    def is_int?(str)
+      return ((str != "0" and str.to_i != 0) or str == "0")
+    end
+
+    def require_login
+      if not user_signed_in?
+        render json: {
+          success: false,
+          message: "No user logged in"
+        }
+        return false
+      end
+      true
+    end
 end

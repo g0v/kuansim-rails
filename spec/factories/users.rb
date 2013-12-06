@@ -9,6 +9,14 @@ FactoryGirl.define do
     uid "12391128925189"
   end
 
+  factory :power_user, :class => User do
+    name "Test Power Guy"
+    email "dont123456@mail.me"
+    password "itsasecret"
+    provider "google"
+    uid "22222222222222"
+  end
+
   factory :user_facebook, :class => User do
     id 2
     name "Test Facebook Guy"

@@ -1,5 +1,4 @@
 FactoryGirl.define do
-
   factory :issue do
     title 'Bart Strike'
     description "Renegotiating employee contract."

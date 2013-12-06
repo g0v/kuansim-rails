@@ -1,73 +1,53 @@
 require 'spec_helper'
 
 describe IssuesController do
-    describe 'create' do
-    it 'should create a new issue' do
-      user = FactoryGirl.create(:user)
-      user.stub(:has_issue?) { true }
-      issue = FactoryGirl.create(:issue)
-      sign_in user
-      fake_data = {"issue" => {
+  before :each do
+    @user = FactoryGirl.create(:user)
+    sign_in @user
+    @fake_data = {"issue" => {
                     "title" => 'Bart Strike',
                     "description" => "Renegotiating employee contract."}}
-      fake_mod_data = {"title" => 'Bart Strike',
-                       "description" => "Renegotiating employee contract."}
-      Issue.should_receive(:create).with(fake_mod_data).and_return(issue)
-      post :create, fake_data
-      response.body.should have_content "success"
+    @issue = FactoryGirl.create(:issue)
+    @user.issues << @issue
+  end
+
+  describe 'create' do
+    it 'should create a new issue' do
+      post :create, @fake_data
+      response.body.should have_content "true"
     end
 
-    it 'should not create a new issue if no params are supplied' do
-      Issue.should_not_receive(:create)
+    it 'should not create a new issue if validation is failed' do
       post :create
+      response.body.should have_content "false"
     end
   end
 
   describe 'delete' do
     it 'should delete the selected issue' do
-      user = FactoryGirl.create(:user)
-      sign_in user
-      controller.current_user.stub(:has_issue?) { true }
-      issue = FactoryGirl.create(:issue)
-      Issue.should_receive(:delete).with(issue.id.to_s)
-      delete :delete, {:id => issue.id}
-      response.body.should have_content "true"
+      Issue.should_receive(:delete)
+      delete :delete, {:id => @issue.id}
     end
   end
 
   describe 'update' do
-
     before :each do
-      user = FactoryGirl.create(:user)
-      sign_in user
       controller.current_user.stub(:has_issue?).and_return(true)
     end
-
+    
     it 'should update the selected issue' do
-      issue = FactoryGirl.create(:issue)
-      fake_data = {"id" => issue.id,
-              "issue" => {
-                "title" => 'Bart Strike',
-                "description" => "Renegotiating employee contract."}}
-      fake_mod_data = {"title" => 'Bart Strike',
-                       "description" => "Renegotiating employee contract."}
-      Issue.stub(:find) {issue}
-      issue.should_receive(:update_attributes).with(fake_mod_data)
-      put :update, fake_data
-      response.body.should have_content "true"
+      @fake_data["id"] = @issue.id
+      Issue.stub(:find) {@issue}
+      Issue.should_receive(:find)
+      @issue.should_receive(:update_attributes).with(@fake_data["issue"])
+      put :update, @fake_data
     end
 
     it 'should not update a new issue if the issue does not exist' do
-      issue = FactoryGirl.create(:issue)
-      Issue.stub(:find) {issue}
-      fake_data = { "id" => 210398,
-        "issue" => {
-          "title" => 'Bart Strike',
-          "description" => "Renegotiating employee contract."
-          }
-        }
-      put :update, fake_data
-      response.body.should have_content "Issue does not exist"
+      Issue.stub(:find) {nil}
+      @issue.should_not_receive(:update_attributes)
+      @fake_data["id"] = 123
+      put :update, @fake_data
     end
   end
 
@@ -77,13 +57,9 @@ describe IssuesController do
 
     it "should successfully return data json for given issue" do
       load "#{Rails.root}/db/seeds.rb"
-      id = Issue.find_by_title("Issue 0")
+      id = Issue.find_by_title("Issue 0").id
       get :timeline, id: id
       response.body.should have_content("Issue 0")
-      response.body.should have_content("Jerry's drinking problem.")
-      response.body.should have_content("Group Meeting Binge Drinking")
-      response.body.should have_content("5 Beers!")
-      response.body.should have_content("#InsufficientAlcohol")
     end
   end
 

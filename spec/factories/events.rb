@@ -1,9 +1,8 @@
 FactoryGirl.define do
 
   factory :event do
-    title 'Bart Strike'
-    location 'San Francisco, CA'
-    description "This is a horrible event!"
+    title 'BART Strike Ends'
+    description  'Governor Jerry Brown announces end to BART strike'
     date_happened DateTime.parse(Time.at(1234567.0 / 1000.0).to_s)
   end
 
@@ -27,5 +26,4 @@ FactoryGirl.define do
     description 'Rice farmers want more things'
     date_happened 92840
   end
-
 end
