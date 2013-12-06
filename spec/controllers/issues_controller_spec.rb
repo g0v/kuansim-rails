@@ -7,20 +7,19 @@ describe IssuesController do
     @fake_data = {"issue" => {
                     "title" => 'Bart Strike',
                     "description" => "Renegotiating employee contract."}}
-    @fake_mod_data = {"title" => 'Bart Strike',
-                     "description" => "Renegotiating employee contract."}
     @issue = FactoryGirl.create(:issue)
+    @user.issues << @issue
   end
 
   describe 'create' do
     it 'should create a new issue' do
-      Issue.should_receive(:create).with(@fake_mod_data)
       post :create, @fake_data
+      response.body.should have_content "true"
     end
 
-    it 'should not create a new issue if no params are supplied' do
-      Issue.should_not_receive(:create)
+    it 'should not create a new issue if validation is failed' do
       post :create
+      response.body.should have_content "false"
     end
   end
 
@@ -33,8 +32,6 @@ describe IssuesController do
 
   describe 'update' do
     before :each do
-      user = FactoryGirl.create(:user)
-      sign_in user
       controller.current_user.stub(:has_issue?).and_return(true)
     end
     
@@ -42,7 +39,7 @@ describe IssuesController do
       @fake_data["id"] = @issue.id
       Issue.stub(:find) {@issue}
       Issue.should_receive(:find)
-      @issue.should_receive(:update_attributes).with(@fake_mod_data)
+      @issue.should_receive(:update_attributes).with(@fake_data["issue"])
       put :update, @fake_data
     end
 

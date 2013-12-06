@@ -111,7 +111,7 @@ class EventsController < ApplicationController
   end
 
   def update
-    event = Event.find(params[:id]).
+    event = Event.find(params[:id])
     event.update_attributes(params[:event])
     if event.invalid?
       field, messages = event.errors.messages.first
@@ -121,10 +121,11 @@ class EventsController < ApplicationController
       }
       return
     end
+    issues = params[:issues] || []
 
-    params[:issues].each do |issue_id|
+    issues.each do |issue_id|
       issue = Issue.find(issue_id)
-      event.issues << issue if not event.issues.include?(issue)
+      event.issues << issue
     end
 
     render json: { success: true }
@@ -133,8 +134,8 @@ class EventsController < ApplicationController
 
   private
 
-    def event_belongs(event_id)
-      event = Event.find(event_id)
+    def event_belongs
+      event = Event.find(params[:id])
       unless current_user.has_event?(event)
         render json: {
           success: false,

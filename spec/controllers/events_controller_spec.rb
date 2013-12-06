@@ -20,7 +20,6 @@ describe EventsController do
       sign_out @user
       sign_in @user_goog
       @request.env["devise.mapping"] = Devise.mappings[:user]
-      Event.should_receive(:create).with(@fake_data["event"])
       cookies.stub(:signed).and_return({:user_c => 300})
       User.stub(:find).and_return(@user_goog)
       post :create, @fake_data
@@ -28,8 +27,8 @@ describe EventsController do
     end
 
     it 'should create a new event' do
-      Event.should_receive(:create).with(@fake_data["event"])
       post :create, @fake_data
+      response.body.should have_content "true"
     end
 
   end
@@ -37,27 +36,30 @@ describe EventsController do
     it 'should delete the selected event' do
       @user.events = [@event]
       Event.stub(:find) {@event}
-      Event.should_receive(:find)
-      Event.should_receive(:delete)
       delete :delete, {:id => @event.id}
+      response.body.should have_content "true"
     end
 
     it 'should not delete the selected event if the user does not own the event' do
       Event.stub(:find) {@event}
-      Event.should_receive(:find)
-      Event.should_not_receive(:delete)
       delete :delete, {:id => @event.id}
+      response.body.should have_content "false"
     end
   end
   describe 'update' do
 
-    it 'should update the selected event' do
+    it 'should update the selected event even if given no issues' do
       @fake_data["id"] = @event.id
       @user.events = [@event]
       Event.stub(:find) {@event}
-      Event.should_receive(:find)
-      @event.should_receive(:update_attributes).with(@fake_data["event"])
-      puts @fake_data
+      put :update, @fake_data
+    end
+
+    it 'should update the selected event if given a list of issues' do
+      @fake_data["id"] = @event.id
+      @user.events = [@event]
+      @fake_data["issues"] = [FactoryGirl.create(:issue)]
+      Event.stub(:find) {@event}
       put :update, @fake_data
     end
 
