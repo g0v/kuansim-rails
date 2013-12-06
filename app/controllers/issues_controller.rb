@@ -72,9 +72,10 @@ class IssuesController < ApplicationController
     return_json = []
     Issue.find(:all).each do |issue|
       return_json << {
-        :id => issue.id,
-        :title => issue.title,
-        :description => issue.description
+        id: issue.id,
+        title: issue.title,
+        description: issue.description,
+        isFollowed: current_user.follows_issue?(issue)
       }
     end
     render json: return_json
