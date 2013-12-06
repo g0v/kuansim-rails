@@ -37,7 +37,6 @@ class EventsController < ApplicationController
     current_user.events << event
 
     render json: { success: true }
-
   end
 
   def delete
@@ -132,8 +131,8 @@ class EventsController < ApplicationController
 
   private
 
-    def event_belongs(event_id)
-      event = Event.find(event_id)
+    def event_belongs
+      event = Event.find(params[:id])
       unless current_user.has_event?(event)
         render json: {
           success: false,
