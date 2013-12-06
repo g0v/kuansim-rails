@@ -41,6 +41,3 @@ Event.create(
   description: 'We love you, Jerry. Please stop hurting yourself!',
   issue_id: issue
 )
-
-
-

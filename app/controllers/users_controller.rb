@@ -6,7 +6,7 @@ class UsersController < ApplicationController
 
   skip_before_filter :try_cookie_login, only: [:authenticate, :login]
 
-  before_filter :need_id, only: [:follow_issue, :follows_issue?]
+  before_filter :need_id, only: [:follow_issue, :follows_issue?, :followed_issues]
 
   # Going to set user image each login (in case image changes)
   def authenticate
@@ -24,11 +24,13 @@ class UsersController < ApplicationController
   # a user logged in and return the username
   def verify
     success = user_signed_in?
+    id = (success) ? current_user.id : ""
     name = (success) ? current_user.name : ""
     email = (success) ? current_user.email : ""
 
     render json: {
       success: success,
+      id: id,
       name: name,
       email: email
     }
@@ -54,6 +56,20 @@ class UsersController < ApplicationController
       success: true,
       follows: current_user.follows_issue?(Issue.find(params[:id]))
     }
+  end
+
+  def followed_issues
+    return_json = []
+    user = User.find(params[:id])
+    followed_issues = user.followed_issues
+    followed_issues.each do |issue|
+      return_json << {
+        id: issue.id,
+        title: issue.title,
+        description: issue.description,
+      }
+    end
+    render json: return_json
   end
 
   def destroy_session
