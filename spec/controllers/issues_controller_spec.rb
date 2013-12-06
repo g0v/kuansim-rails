@@ -36,10 +36,14 @@ describe IssuesController do
   end
 
   describe 'update' do
-    it 'should update the selected issue' do
+
+    before :each do
       user = FactoryGirl.create(:user)
       sign_in user
       controller.current_user.stub(:has_issue?).and_return(true)
+    end
+
+    it 'should update the selected issue' do
       issue = FactoryGirl.create(:issue)
       fake_data = {"id" => issue.id,
               "issue" => {
@@ -48,7 +52,7 @@ describe IssuesController do
       fake_mod_data = {"title" => 'Bart Strike',
                        "description" => "Renegotiating employee contract."}
       Issue.stub(:find) {issue}
-      issue.should_receive(:update_attributes).with(fake_mod_data).and_return(issue)
+      issue.should_receive(:update_attributes).with(fake_mod_data)
       put :update, fake_data
       response.body.should have_content "true"
     end
@@ -56,14 +60,14 @@ describe IssuesController do
     it 'should not update a new issue if the issue does not exist' do
       issue = FactoryGirl.create(:issue)
       Issue.stub(:find) {issue}
-      issue.should_not_receive(:update_attributes)
-      fake_data = { "id" => 5,
+      fake_data = { "id" => 210398,
         "issue" => {
           "title" => 'Bart Strike',
           "description" => "Renegotiating employee contract."
           }
         }
       put :update, fake_data
+      response.body.should have_content "Issue does not exist"
     end
   end
 

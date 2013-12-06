@@ -5,8 +5,9 @@ class IssuesController < ApplicationController
 
   before_filter :need_id, only: [:delete, :update, :related]
 
-  before_filter lambda { issue_belongs(params[:id]) },
-    only: [:delete, :update]
+  before_filter :issue_exists, only: [:delete, :update]
+
+  before_filter :issue_belongs, only: [:delete, :update]
 
   def create
     issue = Issue.create(params[:issue])
@@ -29,7 +30,8 @@ class IssuesController < ApplicationController
   end
 
   def update
-    issue = Issue.find(params[:id]).update_attributes(params[:issue])
+    issue = Issue.find(params[:id])
+    issue.update_attributes(params[:issue])
     success = issue.valid?
     field, messages = issue.errors.messages.first
     message = (success) ? "" : "#{field} #{messages.first}"
@@ -116,12 +118,22 @@ class IssuesController < ApplicationController
 
   private
 
-    def issue_belongs(issue_id)
-      issue = Issue.find(issue_id)
+    def issue_belongs
+      issue = Issue.find(params[:id])
       unless current_user.has_issue?(issue)
         render json: {
           success: false,
           message: "You don't have permission to edit this issue"
+        }
+        return false
+      end
+    end
+
+    def issue_exists
+      unless Issue.exists?(id: params[:id])
+        render json: {
+          success: false,
+          message: "Issue does not exist"
         }
         return false
       end
