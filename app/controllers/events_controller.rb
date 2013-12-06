@@ -6,7 +6,7 @@ require 'uri'
 class EventsController < ApplicationController
 
   before_filter lambda { event_belongs(params[:id]) },
-    except: [:create, :get_event, :get_events,]
+    except: [:create, :get_event, :get_events, :add_to_bookmark_btn]
 
   # Will be called by both create and update. If id field is present, it is an update request.
   def create

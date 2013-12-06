@@ -3,115 +3,76 @@ require 'events_controller'
 require 'json'
 
 describe EventsController do
-  describe 'create' do
-    it 'creates a bookmark from bookmarklet request' do
-      @user_goog = FactoryGirl.create(:user_google)
-      @request.env["devise.mapping"] = Devise.mappings[:user]
-      fake_data = {"event" => {
-                    "title" => 'Bart Strike',
-                    "location" => 'San Francisco, CA',
-                    "description" => "This is a horrible event!",
-                    "date_happened" => '1234567'},
-                   'current_bookmark_user' => '222333'}
-      fake_mod_data = {"title" => 'Bart Strike',
-                       "location" => 'San Francisco, CA',
-                       "description" => "This is a horrible event!",
-                       "date_happened" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
-                       "user_id" => @user_goog.id}
-      Event.should_receive(:create).with(fake_mod_data)
-      cookies.stub(:signed).and_return({:user_c => 300})
-      User.stub(:find).and_return(@user_goog)
-      post :create, fake_data
-      response.should be_success
-    end
-
-    it 'should create a new event' do
-      user = FactoryGirl.create(:user)
-      sign_in user
-      fake_data = {"event" => {
+  before :each do
+    @fake_data = {"event" => {
                     "title" => 'Bart Strike',
                     "location" => 'San Francisco, CA',
                     "description" => "This is a horrible event!",
                     "date_happened" => '1234567'}}
-      fake_mod_data = {"title" => 'Bart Strike',
+    @fake_mod_data = {"title" => 'Bart Strike',
                        "location" => 'San Francisco, CA',
                        "description" => "This is a horrible event!",
-                       "date_happened" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
-                       "user_id" => user.id}
-      Event.should_receive(:create).with(fake_mod_data)
-      post :create, fake_data
+                       "date_happened" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s)}
+    @user = FactoryGirl.create(:user)
+    sign_in @user
+    @user_goog = FactoryGirl.create(:user_google)
+    @event = FactoryGirl.create(:event)
+  end
+
+  describe 'create' do
+    it 'creates a bookmark from bookmarklet request' do
+      sign_out @user
+      sign_in @user_goog
+      @request.env["devise.mapping"] = Devise.mappings[:user]
+      @fake_mod_data["user_id"] = @user_goog.id
+      Event.should_receive(:create).with(@fake_mod_data)
+      cookies.stub(:signed).and_return({:user_c => 300})
+      User.stub(:find).and_return(@user_goog)
+      post :create, @fake_data
+      response.should be_success
+    end
+
+    it 'should create a new event' do
+      @fake_mod_data["user_id"] = @user.id
+      Event.should_receive(:create).with(@fake_mod_data)
+      post :create, @fake_data
     end
     it 'should not create a new event if no params are supplied' do
       Event.should_not_receive(:create)
       post :create
     end
-    it 'should not create a new event if the user is not logged in' do
-      fake_data = {"event" => {
-                    "title" => 'Bart Strike',
-                    "location" => 'San Francisco, CA',
-                    "description" => "This is a horrible event!",
-                    "date_happened" => '1234567'}}
-      Event.should_not_receive(:create)
-      post :create, fake_data
-    end
   end
   describe 'delete' do
     it 'should delete the selected event' do
-      event = FactoryGirl.create(:event)
-      user = FactoryGirl.create(:user, events: [event])
-      sign_in user
-      Event.stub(:find) {event}
-      Event.should_receive(:find).with(event.id)
-      Event.should_receive(:delete).with(event.id)
-      delete :delete, {:id => event.id}
+      @user.events = [@event]
+      Event.stub(:find) {@event}
+      Event.should_receive(:find)
+      Event.should_receive(:delete)
+      delete :delete, {:id => @event.id}
     end
-    it 'should not delete the selected event if the user is not logged in' do
-      Event.should_not_receive(:delete)
-      delete :delete, {:id => 1}
-    end
+
     it 'should not delete the selected event if the user does not own the event' do
-      event = FactoryGirl.create(:event)
-      user = FactoryGirl.create(:user)
-      sign_in user
-      Event.stub(:find) {event}
-      Event.should_receive(:find).with(event.id)
+      Event.stub(:find) {@event}
+      Event.should_receive(:find)
       Event.should_not_receive(:delete)
-      delete :delete, {:id => event.id}
+      delete :delete, {:id => @event.id}
     end
   end
   describe 'update' do
     it 'should update the selected event' do
-      user = FactoryGirl.create(:user)
-      sign_in user
-      event = FactoryGirl.create(:event)
-      fake_data = { "id" => event.id,
-                    "event" => {
-                      "title" => 'Bart Strike',
-                      "location" => 'San Francisco, CA',
-                      "description" => "This is a horrible event!",
-                      "date_happened" => '1234567'} }
-      fake_mod_data = {"title" => 'Bart Strike',
-                       "location" => 'San Francisco, CA',
-                       "description" => "This is a horrible event!",
-                       "date_happened" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s),
-                       "user_id" => user.id}
-      Event.stub(:find) {event}
-      Event.should_receive(:find).with(event.id)
-      event.should_receive(:update_attributes).with(fake_mod_data)
-      put :update, fake_data
-      puts response.body
+      @fake_data["id"] = @event.id
+      @fake_mod_data["user_id"] = @user.id
+      @user.events = [@event]
+      Event.stub(:find) {@event}
+      Event.should_receive(:find)
+      @event.should_receive(:update_attributes).with(@fake_mod_data)
+      put :update, @fake_data
     end
     it 'should not update a new event if the event does not exist' do
-      event = FactoryGirl.create(:event)
-      Event.stub(:find) {event}
-      event.should_not_receive(:update_attributes)
-      fake_data = { "id" => 3,
-                    "event" => {
-                      "title" => 'Bart Strike',
-                      "location" => 'San Francisco, CA',
-                      "description" => "This is a horrible event!",
-                      "date_happened" => '1234567'} }
-      put :update, fake_data
+      Event.stub(:find) {@event}
+      @event.should_not_receive(:update_attributes)
+      @fake_data["id"] = 234
+      put :update, @fake_data
     end
   end
   describe 'get_events' do
@@ -133,7 +94,6 @@ describe EventsController do
 
   describe "Bookmarklet view render" do
     before :each do
-      @user_goog = FactoryGirl.create(:user_google)
       @user_face = FactoryGirl.create(:user_facebook)
       @request.env["devise.mapping"] = Devise.mappings[:user]
     end
