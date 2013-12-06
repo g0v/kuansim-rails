@@ -26,11 +26,21 @@ describe EventsController do
       response.should be_success
     end
 
-    it 'should create a new event' do
+    it 'should create a new event even if no issues are given' do
       post :create, @fake_data
       response.body.should have_content "true"
     end
 
+    it 'should not create a new event if validation failed' do
+      post :create
+      response.body.should have_content "false"
+    end
+
+    it 'should create a new event if a list of issues is given' do
+      @fake_data["issues"] = [FactoryGirl.create(:issue)]
+      post :create, @fake_data
+      response.body.should have_content "true"
+    end
   end
   describe 'delete' do
     it 'should delete the selected event' do
@@ -53,6 +63,7 @@ describe EventsController do
       @user.events = [@event]
       Event.stub(:find) {@event}
       put :update, @fake_data
+      response.body.should have_content "true"
     end
 
     it 'should update the selected event if given a list of issues' do
@@ -61,6 +72,7 @@ describe EventsController do
       @fake_data["issues"] = [FactoryGirl.create(:issue)]
       Event.stub(:find) {@event}
       put :update, @fake_data
+      response.body.should have_content "true"
     end
 
     it 'should not update a new event if the event does not exist' do
@@ -68,25 +80,42 @@ describe EventsController do
       @event.should_not_receive(:update_attributes)
       @fake_data["id"] = 234
       put :update, @fake_data
+      response.body.should have_content "false"
     end
+
+    it 'should not update a new event if validation fails' do
+      put :update, {:id => @event.id, :title => ""}
+      response.body.should have_content "false"
   end
 
-  describe 'get_events' do
+  describe 'index' do
     it 'should get a list of all events' do
-      Event.should_receive(:all)
-      get :get_events
+      get :index
+      response.body.should have_content "true"
     end
 
     it 'should not get a list of events if the limit param is not an integer' do
-      get :get_events, {:limit => "not an integer"}
+      get :index, {:limit => "not an integer"}
       response.body.should have_content "[]"
     end
 
     it 'should get a list with a limited number of events' do
-      Event.should_receive(:limit).with("5")
-      get :get_events, {:limit => 5}
+      get :index, {:limit => 5}
+      response.body.should have_content "true"
+    end
+  end
+
+  describe 'show' do
+    it 'should get an event' do
+      get :show, @event.id
+      response.body.should have_content "true"
     end
 
+    it 'should not get an event' do
+      sign_out @user
+      get :show, @event.id
+      response.body.should have_content "false"
+    end
   end
 
   describe "Bookmarklet view render" do

@@ -68,20 +68,6 @@ class IssuesController < ApplicationController
     }
   end
 
-  def get_issue
-    json_reply = {success: true}
-    issue_id = params[:id].to_i
-    if issue_id.nil?
-      json_reply[:success] = false
-      json_reply[:message] = "The event was not returned. Param id is required."
-    else
-      ret_issue_json = Issue.find(issue_id).as_json
-      json_reply[:issue] = ret_issue_json
-      json_reply[:message] = "The event was returned."
-    end
-    render json: json_reply
-  end
-
   def list_all_issues
     return_json = []
     Issue.find(:all).each do |issue|

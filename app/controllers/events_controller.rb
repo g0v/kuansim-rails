@@ -5,7 +5,7 @@ require 'uri'
 
 class EventsController < ApplicationController
 
-  skip_before_filter :require_login, only: [:get_event, :get_events]
+  skip_before_filter :require_login, only: [:index, :show]
 
   # Check that params[:id] exists using function from ApplicationController
   before_filter :need_id, only: [:delete, :show, :update]
@@ -45,20 +45,6 @@ class EventsController < ApplicationController
     render json: {success: true}
   end
 
-  def get_event
-    json_reply = {success: true}
-    event_id = params[:id].to_i
-    if event_id.nil?
-      json_reply[:success] = false
-      json_reply[:message] = "The event was not returned. Param id is required."
-    else
-      ret_event_json = Event.find(event_id).as_json
-      json_reply[:event] = ret_event_json
-      json_reply[:message] = 'The event was returned.'
-    end
-    render json: json_reply
-  end
-
   def show
     event = Event.find(params[:id])
     render json: {
@@ -67,7 +53,7 @@ class EventsController < ApplicationController
     }
   end
 
-  def get_events
+  def index
     limit = params[:limit] || "all"
     event_list = case limit
     when "all"

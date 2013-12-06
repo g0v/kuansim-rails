@@ -59,7 +59,7 @@ Kuansim::Application.routes.draw do
   post  '/collections/bookmarks', to: 'events#create'
   delete  '/collections/bookmarks/:id', to: 'events#delete'
   put '/collections/bookmarks/:id', to: 'events#update'
-  get   '/collections/bookmarks', to: 'events#get_events'
+  get   '/collections/bookmarks', to: 'events#index'
   get  '/users/sign_out', to: 'users#destroy_session'
   post '/users/issues/follow', to: 'users#follow_issue'
   get '/users/issues/:id/follows', to: 'users#follows_issue?'
@@ -74,7 +74,7 @@ Kuansim::Application.routes.draw do
   get '/collections/issues/:id/related', to: 'issues#related'
   ############################# ISSUE #############################
 
-  get   '/collections/bookmarks/:id', to: 'events#get_event'
+  get   '/collections/bookmarks/:id', to: 'events#show'
 
   ###################### ADD TO BOOKMARK BTN ######################
   get   '/bookmarks/save', to: 'events#add_to_bookmark_btn'
