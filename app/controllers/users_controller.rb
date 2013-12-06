@@ -4,6 +4,8 @@ class UsersController < ApplicationController
 
   skip_before_filter :require_login, except: [:follow_issue, :follows_issue?, :get_user_events_by_issue]
 
+  before_filter :need_id, only: [:follow_issue, :follows_issue?]
+
   # Going to set user image each login (in case image changes)
   def authenticate
     provider = params[:provider]
@@ -15,26 +17,19 @@ class UsersController < ApplicationController
     login(@user.email)
   end
 
+  # Thanks to try_cookie_login before filter in application controller
+  # it already tried to log in with the cookie, so just check if there is
+  # a user logged in and return the username
   def verify
-    user_id = cookies.signed[:user_c]
+    success = user_signed_in?
+    name = (success) ? current_user.name : ""
+    email = (success) ? current_user.email : ""
 
-    if user_id.nil?
-      render json: {success: false}
-    elsif not user_signed_in? or current_user.id != user_id
-      if user_signed_in?
-        sign_out current_user
-      end
-
-      user = User.find(user_id)
-      if user
-        sign_in user
-        render json: {success: true, email: current_user.email, name: current_user.name}
-      else
-        render json: {success: false}
-      end
-    else
-      render json: {success: true, email: current_user.email, name: current_user.name}
-    end
+    render json: {
+      success: success,
+      name: name,
+      email: email
+    }
 
   end
 
@@ -42,7 +37,7 @@ class UsersController < ApplicationController
     issue = Issue.find(params[:id])
     if issue
       followed_issues = current_user.followed_issues
-      followed_issues << issue unless followed_issues.include?(issue)
+      followed_issues << issue
       render json: { success: true }
     else
       render json: {
@@ -55,7 +50,7 @@ class UsersController < ApplicationController
   def follows_issue?
     render json: {
       success: true,
-      follows: current_user.followed_issues.include?(Issue.find(params[:id]))
+      follows: current_user.follows_issue?(Issue.find(params[:id]))
     }
   end
 

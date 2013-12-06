@@ -9,10 +9,6 @@ describe EventsController do
                     "location" => 'San Francisco, CA',
                     "description" => "This is a horrible event!",
                     "date_happened" => '1234567'}}
-    @fake_mod_data = {"title" => 'Bart Strike',
-                       "location" => 'San Francisco, CA',
-                       "description" => "This is a horrible event!",
-                       "date_happened" => DateTime.parse(Time.at(1234567.0 / 1000.0).to_s)}
     @user = FactoryGirl.create(:user)
     sign_in @user
     @user_goog = FactoryGirl.create(:user_google)
@@ -24,8 +20,7 @@ describe EventsController do
       sign_out @user
       sign_in @user_goog
       @request.env["devise.mapping"] = Devise.mappings[:user]
-      @fake_mod_data["user_id"] = @user_goog.id
-      Event.should_receive(:create).with(@fake_mod_data)
+      Event.should_receive(:create).with(@fake_data["event"])
       cookies.stub(:signed).and_return({:user_c => 300})
       User.stub(:find).and_return(@user_goog)
       post :create, @fake_data
@@ -33,14 +28,10 @@ describe EventsController do
     end
 
     it 'should create a new event' do
-      @fake_mod_data["user_id"] = @user.id
-      Event.should_receive(:create).with(@fake_mod_data)
+      Event.should_receive(:create).with(@fake_data["event"])
       post :create, @fake_data
     end
-    it 'should not create a new event if no params are supplied' do
-      Event.should_not_receive(:create)
-      post :create
-    end
+
   end
   describe 'delete' do
     it 'should delete the selected event' do
@@ -59,15 +50,17 @@ describe EventsController do
     end
   end
   describe 'update' do
+
     it 'should update the selected event' do
       @fake_data["id"] = @event.id
-      @fake_mod_data["user_id"] = @user.id
       @user.events = [@event]
       Event.stub(:find) {@event}
       Event.should_receive(:find)
-      @event.should_receive(:update_attributes).with(@fake_mod_data)
+      @event.should_receive(:update_attributes).with(@fake_data["event"])
+      puts @fake_data
       put :update, @fake_data
     end
+
     it 'should not update a new event if the event does not exist' do
       Event.stub(:find) {@event}
       @event.should_not_receive(:update_attributes)
@@ -75,21 +68,23 @@ describe EventsController do
       put :update, @fake_data
     end
   end
+
   describe 'get_events' do
     it 'should get a list of all events' do
       Event.should_receive(:all)
       get :get_events
     end
+
     it 'should not get a list of events if the limit param is not an integer' do
-      Event.should_not_receive(:all)
-      Event.should_not_receive(:take)
       get :get_events, {:limit => "not an integer"}
+      response.body.should have_content "[]"
     end
+
     it 'should get a list with a limited number of events' do
-      Event.should_receive(:take)
-      Event.should_not_receive(:all)
+      Event.should_receive(:limit).with("5")
       get :get_events, {:limit => 5}
     end
+
   end
 
   describe "Bookmarklet view render" do

@@ -5,81 +5,43 @@ require 'uri'
 
 class EventsController < ApplicationController
 
+  skip_before_filter :require_login, only: [:get_event, :get_events]
+
+  # Check that params[:id] exists using function from ApplicationController
+  before_filter :need_id, only: [:delete, :show, :update]
+
+  # Use lambda to allow params[:id] argument
   before_filter lambda { event_belongs(params[:id]) },
-    except: [:create, :get_event, :get_events, :add_to_bookmark_btn]
+    only: [:update, :delete]
 
-  # Will be called by both create and update. If id field is present, it is an update request.
   def create
-    new_event_params = params[:event]
-    update_id = params[:id]
-    json_reply = {success: true}
-    event = nil
-    if new_event_params.nil?
-      json_reply[:success] = false
-      json_reply[:message] = "The event was not created. At least one field must be filled out."
-    else
-      new_event_params[:date_happened] = DateTime.parse(Time.at(new_event_params[:date_happened].to_f / 1000.0).to_s)
-      if !current_user.nil? || params['current_bookmark_user']
-        if params['current_bookmark_user']
-          cookies['user_c'] = params['current_bookmark_user']
-          user = User.find(cookies.signed[:user_c])
-          if user
-            sign_in user
-          else
-            json_reply[:success] = false
-            json_reply[:message] = "The event was not created or updated. You must be logged in to create a new event."
-          end
-        end
-        new_event_params[:user_id] = current_user.id
-        if update_id.nil?
-          Event.create(new_event_params)
-          json_reply[:message] = "The event was created."
-        else
-          event_id = update_id.to_i
-          if Event.find(event_id).nil?
-            json_reply[:success] = false
-            json_reply[:message] = "The event was not updated. The given id does not match any existing event."
-          else
-            Event.find(event_id).update_attributes(new_event_params)
-            json_reply[:message] = "The event was updated."
-          end
-        end
-      else
-        json_reply[:success] = false
-        json_reply[:message] = "The event was not created or updated. You must be logged in to create a new event."
-      end
+    event_params = params[:event]
+    event = Event.create(event_params)
+    if event.invalid?
+      field, messages = event.errors.messages.first
+      render json: {
+        success: false,
+        message: "#{field} #{messages.first}"
+      }
+      return
     end
 
-    if not event.nil?
-      new_event_params[:issues].each do |issue|
-        event.issues << issue
-      end
-      event.save
+    issues = params[:issues] || []
+    # Associate chosen issues represented by array of issue_ids
+    issues.each do |issue_id|
+      event.issues << Issue.find(issue_id)
     end
 
-    render json: json_reply
+    # Associate user with event
+    current_user.events << event
+
+    render json: { success: true }
+
   end
 
   def delete
-    json_reply = {success: true}
-    delete_id = params[:id]
-    if params[:id].nil?
-      json_reply[:success] = false
-      json_reply[:message] = "The event was not deleted. You must select an event first."
-    else
-      delete_id = delete_id.to_i
-      if current_user.nil?
-        json_reply[:success] = false
-        json_reply[:message] = "The event was not deleted. You must be logged in."
-      elsif !current_user.events.include? Event.find(delete_id)
-        json_reply[:success] = false
-        json_reply[:message] = "The event was not deleted. You must own this event."
-      else
-        Event.delete(delete_id)
-        json_reply[:message] = "The event was deleted."
-      end
-    end
-    render json: json_reply
+    Event.delete(params[:id])
+    render json: {success: true}
   end
 
   def get_event
@@ -97,20 +59,20 @@ class EventsController < ApplicationController
   end
 
   def get_events
-    json_reply = {success: true}
-    limit = params[:limit]
-    events_list = []
-    if limit.nil?
-      events_list = Event.all
-    elsif limit != "0" && limit.to_i == 0
-      json_reply[:success] = false
-      json_reply[:message] = "The events were not returned. Param id must be an integer."
+    limit = params[:limit] || "all"
+    event_list = case limit
+    when "all"
+      Event.all
+    when /^[-+]?[0-9]+$/
+      Event.limit(limit)
     else
-      events_list = Event.take(limit.to_i)
-      json_reply[:message] = "The events were returned."
+      []
     end
-    json_reply[:events] = events_list
-    render json: json_reply
+
+    render json: {
+      success: true,
+      events: event_list
+    }
   end
 
   def add_to_bookmark_btn
@@ -140,20 +102,36 @@ class EventsController < ApplicationController
   end
 
   def update
-    create
-  end
-
-  def new
-  end
-
-  def event_belongs(event_id)
-    event = Event.find(event_id)
-    unless current_user.events.include?(event)
+    event = Event.find(params[:id]).update_attributes(params[:event])
+    if event.invalid?
+      field, messages = event.errors.messages.first
       render json: {
         success: false,
-        message: "You don't have permission to edit this event"
+        message: "#{field} #{messages.first}"
       }
+      return
     end
+
+    params[:issues].each do |issue_id|
+      issue = Issue.find(issue_id)
+      event.issues << issue if not event.issues.include?(issue)
+    end
+
+    render json: { success: true }
+
   end
+
+  private
+
+    def event_belongs(event_id)
+      event = Event.find(event_id)
+      unless current_user.has_event?(event)
+        render json: {
+          success: false,
+          message: "You don't have permission to edit this event"
+        }
+      end
+      return false
+    end
 
 end

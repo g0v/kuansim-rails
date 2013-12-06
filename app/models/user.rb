@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
   has_one :profile
   before_create :build_default_profile
 
-  has_and_belongs_to_many :followed_issues, class_name: "Issue", join_table: 'users_issues'
+  has_and_belongs_to_many :followed_issues, class_name: "Issue", join_table: 'users_issues', uniq: true
 
   # TODO: CHECK FOR MALFORMED EMAILS
   def self.find_by_provider(user_info, provider)
@@ -50,6 +50,18 @@ class User < ActiveRecord::Base
     rescue
       ""
     end
+  end
+
+  def has_event?(event)
+    self.events.include?(event)
+  end
+
+  def has_issue?(issue)
+    self.issues.include?(issue)
+  end
+
+  def follows_issue?(issue)
+   self.followed_issues.include?(issue)
   end
 
   private

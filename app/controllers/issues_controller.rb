@@ -1,57 +1,69 @@
 class IssuesController < ApplicationController
   require 'json'
 
+  skip_before_filter :require_login, except: [:create, :delete, :update]
+
+  before_filter :need_id, only: [:delete, :update, :related]
+
+  before_filter lambda { issue_belongs(params[:id]) },
+    only: [:delete, :update]
+
   def create
-    new_issue_params = params[:issue]
-    update_id = params[:id]
-    json_reply = {success: true}
-    if new_issue_params.nil?
-      json_reply[:success] = false
-      json_reply[:message] = "The issue was not created. At least one field must be filled out."
+    issue = Issue.create(params[:issue])
+    if issue.valid?
+      current_user.issues << issue
+      render json: { success: true }
     else
-      if !current_user.nil?
-        if update_id.nil?
-          Issue.create(new_issue_params)
-          json_reply[:message] = "The issue was created."
-        else
-          issue_id = update_id.to_i
-          if Issue.find(issue_id).nil?
-            json_reply[:success] = false
-            json_reply[:message] = "The issue was not updated. The given id does not match any existing issue."
-          else
-            Issue.find(issue_id).update_attributes(new_issue_params)
-            json_reply[:message] = "The issue was updated."
-          end
-        end
-      else
-        json_reply[:success] = false
-        json_reply[:message] = "The issue was not created. You must be logged in to create a new issue."
-      end
+      field, messages = issue.errors.messages.first
+      render json: {
+        success: false,
+        message: "#{field} #{messages.first}"
+      }
     end
-    render json: json_reply
+
   end
 
   def delete
-    json_reply = {success: true}
-    delete_id = params[:id]
-    if params[:id].nil?
-      json_reply[:success] = false
-      json_reply[:message] = "The issue was not deleted. You must select an issue first."
-    else
-      delete_id = delete_id.to_i
-      if current_user.nil?
-        json_reply[:success] = false
-        json_reply[:message] = "The issue was not deleted. You must be logged in."
-      else
-        Issue.delete(delete_id)
-        json_reply[:message] = "The issue was deleted."
-      end
-    end
-    render json: json_reply
+    Issue.delete(params[:id])
+    render json: { success: true}
   end
 
   def update
-    create
+    issue = Issue.find(params[:id]).update_attributes(params[:issue])
+    success = issue.valid?
+    field, messages = issue.errors.messages.first
+    message = (success) ? "" : "#{field} #{messages.first}"
+    render json: {
+      success: success,
+      message: message
+    }
+  end
+
+  # Return up to 5 "related" issues
+  # For now is suppperrrr slow but w/e xD
+  def related
+    issue = Issue.includes(:events).find(params[:id])
+    other_issues = Issue.includes(:events).where('id != ?', params[:id])
+    issue_counts = Hash.new(0)
+    other_issues.each do |other_issue|
+      other_issue.events.each do |event|
+        if issue.events.include?(event)
+          issue_counts[other_issue] += 1
+        end
+      end
+    end
+
+    # Gets related issues by seeing which issues have the most events
+    # in common
+    related_issues = issue_counts.select{|k, v| v > 0 }.
+      sort_by {|k, v| v}.
+      reverse[0..4].
+      map {|k, v| k.to_json}
+
+    render json: {
+      success: true,
+      related: related_issues
+    }
   end
 
   def get_issue
@@ -115,5 +127,18 @@ class IssuesController < ApplicationController
       }
     }
   end
+
+  private
+
+    def issue_belongs(issue_id)
+      issue = Issue.find(issue_id)
+      unless current_user.has_issue?(issue)
+        render json: {
+          success: false,
+          message: "You don't have permission to edit this issue"
+        }
+        return false
+      end
+    end
 
 end
