@@ -10,9 +10,10 @@ class EventsController < ApplicationController
   # Check that params[:id] exists using function from ApplicationController
   before_filter :need_id, only: [:delete, :show, :update]
 
+  before_filter :event_exists, only: [:delete, :show, :update]
+
   # Use lambda to allow params[:id] argument
-  before_filter lambda { event_belongs(params[:id]) },
-    only: [:update, :delete]
+  before_filter :event_belongs, only: [:update, :delete]
 
   def create
     event_params = params[:event]
@@ -56,6 +57,14 @@ class EventsController < ApplicationController
       json_reply[:message] = 'The event was returned.'
     end
     render json: json_reply
+  end
+
+  def show
+    event = Event.find(params[:id])
+    render json: {
+      success: true,
+      event: event.to_json
+    }
   end
 
   def get_events
@@ -102,7 +111,8 @@ class EventsController < ApplicationController
   end
 
   def update
-    event = Event.find(params[:id]).update_attributes(params[:event])
+    event = Event.find(params[:id]).
+    event.update_attributes(params[:event])
     if event.invalid?
       field, messages = event.errors.messages.first
       render json: {
@@ -134,4 +144,13 @@ class EventsController < ApplicationController
       return false
     end
 
+    def event_exists
+      unless Event.exists?(id: params[:id])
+        render json: {
+          success: false,
+          message: "Event does not exist"
+        }
+        return false
+      end
+    end
 end

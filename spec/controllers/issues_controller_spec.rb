@@ -32,6 +32,12 @@ describe IssuesController do
   end
 
   describe 'update' do
+    before :each do
+      user = FactoryGirl.create(:user)
+      sign_in user
+      controller.current_user.stub(:has_issue?).and_return(true)
+    end
+    
     it 'should update the selected issue' do
       @fake_data["id"] = @issue.id
       Issue.stub(:find) {@issue}
