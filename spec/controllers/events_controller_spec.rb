@@ -86,6 +86,7 @@ describe EventsController do
     it 'should not update a new event if validation fails' do
       put :update, {:id => @event.id, :title => ""}
       response.body.should have_content "false"
+    end
   end
 
   describe 'index' do
@@ -107,14 +108,14 @@ describe EventsController do
 
   describe 'show' do
     it 'should get an event' do
-      get :show, @event.id
+      get :show, {:id => @event.id}
       response.body.should have_content "true"
     end
 
-    it 'should not get an event' do
+    it 'should get an event even if not logged in' do
       sign_out @user
-      get :show, @event.id
-      response.body.should have_content "false"
+      get :show, {:id => @event.id}
+      response.body.should have_content "true"
     end
   end
 
