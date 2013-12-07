@@ -23,6 +23,7 @@ end
 gem 'jquery-rails'
 gem 'devise'
 gem 'omniauth'
+gem 'opengraph_parser'
 
 group :development, :test do
   gem 'factory_girl'
