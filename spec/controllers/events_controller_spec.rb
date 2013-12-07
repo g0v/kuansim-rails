@@ -8,7 +8,8 @@ describe EventsController do
                     "title" => 'Bart Strike',
                     "location" => 'San Francisco, CA',
                     "description" => "This is a horrible event!",
-                    "date_happened" => '1234567'}}
+                    "date_happened" => '1234567',
+                    "url" => 'http://google.com'}}
     @user = FactoryGirl.create(:user)
     sign_in @user
     controller.current_user.stub(:has_event?).and_return true

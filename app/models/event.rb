@@ -1,12 +1,12 @@
 class Event < ActiveRecord::Base
-  attr_accessible :date_happened, :description, :location, :title, :issue_id, :user_id
+  attr_accessible :date_happened, :description, :location, :title, :issue_id, :user_id, :url
   belongs_to :user
 
   has_many :events_issues
   has_many :issues, through: :events_issues, uniq: true
   validates :title, presence: true
-  validates :description, presence: true
   validates :date_happened, presence: true
+  validates :url, presence: true
 
   before_save :parse_date
 
@@ -19,6 +19,8 @@ class Event < ActiveRecord::Base
      :title         => self.title,
      :date_happened => self.date_happened,
      :location      => self.location,
-     :description   => self.description}
+     :description   => self.description,
+     :url           => self.url
+   }
   end
 end

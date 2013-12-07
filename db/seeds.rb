@@ -20,14 +20,16 @@ issue2.events << Event.create(
   title: "I basically just want to sleep",
   date_happened: DateTime.now,
   location: 'On my bed',
-  description: 'But right now I need to work on this project'
+  description: 'But right now I need to work on this project',
+  url: 'http://www.bbc.com'
 )
 
 issue1.events << Event.create(
   title: 'Group Meeting Binge Drinking',
   date_happened: DateTime.parse('2013-11-10'),
   location: 'Jerry\'s Place',
-  description: '5 Beers!'
+  description: '5 Beers!',
+  url: 'http://www.ddc.com'
 )
 
 issue1.events << Event.create(
@@ -35,4 +37,5 @@ issue1.events << Event.create(
   date_happened: DateTime.parse('2013-11-10'),
   location: 'Jerry\'s Place',
   description: 'We love you, Jerry. Please stop hurting yourself!',
+  url: 'http://www.eec.com'
 )

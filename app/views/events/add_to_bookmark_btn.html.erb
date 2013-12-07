@@ -32,16 +32,12 @@
         var serializedData = $('#kuansim_bookmark').serialize();
 
         var formData = {
-          title: $('#bookmark_title').val(),
-          url: $('#bookmark_url').val(),
-          description: $('#bookmark_description').val(),
-          date_happened: Date.now(),
-          location: 'test',
           current_bookmark_user: "<%= cookies[:user_c] %>",
           event: {
             title: $('#bookmark_title').val(),
             description: $('#bookmark_description').val(),
-            date_happened: Date.now(),
+            url: $('#bookmark_url').val(),
+            date_happened: parseInt(Date.now(), 10),
             location: 'test'
           }
         };

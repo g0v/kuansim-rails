@@ -17,6 +17,10 @@ class EventsController < ApplicationController
 
   def create
     event_params = params[:event]
+    if !(event_params[:date_happened].is_a? Integer) # jQuery will automatically make the
+                                                     # request string, parse it to integer
+      event_params[:date_happened] = event_params[:date_happened].to_f
+    end
     event = Event.create(event_params)
     if event.invalid?
       field, messages = event.errors.messages.first
