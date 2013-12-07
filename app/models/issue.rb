@@ -21,4 +21,5 @@ class Issue < ActiveRecord::Base
       description: self.description
     }
   end
+
 end

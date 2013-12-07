@@ -64,7 +64,8 @@ Kuansim::Application.routes.draw do
   post '/users/issues/follow', to: 'users#follow_issue'
   get '/users/issues/:id/follows', to: 'users#follows_issue?'
   get '/users/:id/:issue_id', to: 'users#get_user_events_by_issue'
-  get '/users/uid/:id/issues', to: 'users#followed_issues'
+  get '/users/:id/issues', to: 'users#followed_issues'
+  post '/users/issues/unfollow', to: 'users#unfollow_issue'
 
   ############################# ISSUE #############################
   get   '/collections/issues', to: 'issues#list_all_issues'

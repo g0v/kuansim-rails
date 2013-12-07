@@ -2,11 +2,11 @@ class UsersController < ApplicationController
   require 'open-uri'
   require 'json'
 
-  skip_before_filter :require_login, except: [:follow_issue, :follows_issue?, :get_user_events_by_issue]
-
   skip_before_filter :try_cookie_login, only: [:authenticate, :login]
 
-  before_filter :need_id, only: [:follow_issue, :follows_issue?, :followed_issues]
+  skip_before_filter :require_login, only: [:authenticate, :verify, :followed_issues, :login]
+
+  before_filter :need_id, only: [:unfollow_issue, :follow_issue, :follows_issue?, :followed_issues]
 
   # Going to set user image each login (in case image changes)
   def authenticate
@@ -51,6 +51,10 @@ class UsersController < ApplicationController
     end
   end
 
+  def unfollow_issue
+    current_user.followed_issues.delete(Issue.find(params[:id]))
+  end
+
   def follows_issue?
     render json: {
       success: true,
@@ -58,6 +62,7 @@ class UsersController < ApplicationController
     }
   end
 
+  # Get followed issues of any user
   def followed_issues
     return_json = []
     user = User.find(params[:id])
@@ -97,14 +102,6 @@ class UsersController < ApplicationController
     }
   end
 
-  def google_info(access_token)
-    "https://www.googleapis.com/oauth2/v2/userinfo?access_token=#{access_token}"
-  end
-
-  def facebook_info(access_token)
-    "https://graph.facebook.com/me?access_token=#{access_token}"
-  end
-
   def get_user_events_by_issue
     json_reply = {success: true}
     events = []
@@ -122,18 +119,17 @@ class UsersController < ApplicationController
   end
 
   private
+
     def is_int?(str)
       return ((str != "0" and str.to_i != 0) or str == "0")
     end
 
-    def require_login
-      if not user_signed_in?
-        render json: {
-          success: false,
-          message: "No user logged in"
-        }
-        return false
-      end
-      true
+    def google_info(access_token)
+      "https://www.googleapis.com/oauth2/v2/userinfo?access_token=#{access_token}"
     end
+
+    def facebook_info(access_token)
+      "https://graph.facebook.com/me?access_token=#{access_token}"
+    end
+
 end
