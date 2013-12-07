@@ -150,14 +150,4 @@ class IssuesController < ApplicationController
       end
     end
 
-    def issue_exists
-      unless Issue.exists?(id: params[:id])
-        render json: {
-          success: false,
-          message: "Issue does not exist"
-        }
-        return false
-      end
-    end
-
 end

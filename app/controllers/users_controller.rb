@@ -7,6 +7,7 @@ class UsersController < ApplicationController
   skip_before_filter :require_login, only: [:authenticate, :verify, :followed_issues, :login]
 
   before_filter :need_id, only: [:unfollow_issue, :follow_issue, :follows_issue?, :followed_issues]
+  before_filter :issue_exists, only: [:unfollow_issue, :follow_issue, :follows_issue?]
 
   # Going to set user image each login (in case image changes)
   def authenticate
@@ -53,6 +54,7 @@ class UsersController < ApplicationController
 
   def unfollow_issue
     current_user.followed_issues.delete(Issue.find(params[:id]))
+    render json: { success: true }
   end
 
   def follows_issue?
