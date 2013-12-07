@@ -68,6 +68,41 @@ class IssuesController < ApplicationController
     }
   end
 
+  # Get top 5 issues with the most events
+  # Will cache this method and then invalidate on a new event save
+  # May need raw sql
+  def popular
+    query = %Q(
+      select issue_id
+      from events_issues
+      group by issue_id
+      having count(issue_id)>0
+      order by count(issue_id) desc
+      limit 5
+    )
+    result = ActiveRecord::Base.connection.execute(query)
+    issues = result.map do |e|
+      Issue.find(e["issue_id"])
+    end
+    render json: {
+      success: true,
+      issues: issues
+    }
+  end
+
+  def index
+    issues = Issue.all.map do |issue|
+      issue.to_hash.merge(
+        isFollowed: current_user.follows_issue?(issue.id)
+      )
+
+    render json: {
+      success: true,
+      issues: issues
+    }
+    end
+  end
+
   def list_all_issues
     return_json = []
     Issue.find(:all).each do |issue|
@@ -75,7 +110,7 @@ class IssuesController < ApplicationController
         id: issue.id,
         title: issue.title,
         description: issue.description,
-        isFollowed: current_user.follows_issue?(issue)
+        isFollowed: current_user.follows_issue?(issue.id)
       }
     end
     render json: return_json

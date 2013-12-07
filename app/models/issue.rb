@@ -6,4 +6,12 @@ class Issue < ActiveRecord::Base
 
   validates :title, presence: true
   validates :description, presence: true
+
+  def to_hash
+    {
+      id: self.id,
+      title: self.title,
+      description: self.description
+    }
+  end
 end

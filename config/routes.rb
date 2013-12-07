@@ -73,6 +73,7 @@ Kuansim::Application.routes.draw do
   put   '/collections/issues/:id', to: 'issues#update'
   delete  '/collections/issues/:id', to: 'issues#delete'
   get '/collections/issues/:id/related', to: 'issues#related'
+  get '/collections/issues/popular', to: 'issues#popular'
   ############################# ISSUE #############################
 
   get   '/collections/bookmarks/:id', to: 'events#show'

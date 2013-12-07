@@ -6,38 +6,33 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-Issue.create(
+issue1 = Issue.create(
   title: 'Issue 0',
   description: 'Jerry\'s drinking problem.'
 )
 
-Issue.create(
+issue2 = Issue.create(
   title: 'Serious Sunday Workload',
   description: "Can we have Sunday off not working on anything?"
 )
 
-Event.create(
+issue2.events << Event.create(
   title: "I basically just want to sleep",
   date_happened: DateTime.now,
   location: 'On my bed',
-  description: 'But right now I need to work on this project',
-  issue_id: Issue.find_by_title('Serious Sunday Workload').id
+  description: 'But right now I need to work on this project'
 )
 
-issue = Issue.where(:title => 'Issue 0')[0].id
-
-Event.create(
+issue1.events << Event.create(
   title: 'Group Meeting Binge Drinking',
   date_happened: DateTime.parse('2013-11-10'),
   location: 'Jerry\'s Place',
-  description: '5 Beers!',
-  issue_id: issue
+  description: '5 Beers!'
 )
 
-Event.create(
+issue1.events << Event.create(
   title: 'Intervention',
   date_happened: DateTime.parse('2013-11-10'),
   location: 'Jerry\'s Place',
   description: 'We love you, Jerry. Please stop hurting yourself!',
-  issue_id: issue
 )

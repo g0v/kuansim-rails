@@ -153,11 +153,46 @@ describe IssuesController do
     it "should be successfully found and displayed" do
       get :related, {id: @bart.id}
       response.body.should have_content "Strike in Malaysia"
+      response.body.should_not have_content "College Drinking"
     end
 
     it "should not display issues that have 0 events in common" do
       get :related, {id: @drinking}
       response.body.should have_content "\"related\":[]"
+    end
+
+  end
+
+  describe "popular" do
+
+    before :each do
+      @bart = Issue.create(
+        title: 'Bart Strike',
+        description: 'Workers want more stuff'
+        )
+      @drinking = Issue.create(
+        title: 'College Drinking',
+        description: 'Increased drinking in college'
+        )
+      @malaysia = Issue.create(
+        title: 'Strike in Malaysia',
+        description: 'Rice farmers want more shit'
+        )
+      bart_event = FactoryGirl.build(:bart_event)
+      drink_event = FactoryGirl.build(:freshmen_drink)
+      malaysia_event = FactoryGirl.build(:malaysia_event)
+
+      [bart_event, malaysia_event].each do |event|
+        @bart.events << event
+      end
+      @malaysia.events << malaysia_event
+    end
+
+    it "should correctly return the issues with the most events" do
+      get :popular
+      response.body.should have_content "Bart Strike"
+      response.body.should have_content "Strike in Malaysia"
+      response.body.should_not have_content "College Drinking"
     end
 
   end

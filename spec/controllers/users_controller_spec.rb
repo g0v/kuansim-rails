@@ -6,7 +6,6 @@ describe UsersController do
     @user = FactoryGirl.create(:user)
     @user_goog = FactoryGirl.create(:user_google)
     @user_face = FactoryGirl.create(:user_facebook)
-    @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
   it "should successfully render json info of a valid google user" do
