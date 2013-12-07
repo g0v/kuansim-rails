@@ -1,7 +1,9 @@
 class Event < ActiveRecord::Base
   attr_accessible :date_happened, :description, :location, :title, :issue_id, :user_id
   belongs_to :user
-  has_and_belongs_to_many :issues, uniq: true
+
+  has_many :events_issues
+  has_many :issues, through: :events_issues, uniq: true
   validates :title, presence: true
   validates :description, presence: true
   validates :date_happened, presence: true
