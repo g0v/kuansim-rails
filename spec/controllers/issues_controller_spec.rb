@@ -25,6 +25,7 @@ describe IssuesController do
 
   describe 'delete' do
     it 'should delete the selected issue' do
+      controller.current_user.stub(:has_issue?).and_return true
       Issue.should_receive(:delete)
       delete :delete, {:id => @issue.id}
     end
@@ -34,7 +35,7 @@ describe IssuesController do
     before :each do
       controller.current_user.stub(:has_issue?).and_return(true)
     end
-    
+
     it 'should update the selected issue' do
       @fake_data["id"] = @issue.id
       Issue.stub(:find) {@issue}

@@ -53,15 +53,15 @@ class User < ActiveRecord::Base
   end
 
   def has_event?(event_id)
-    self.event_ids.include?(event)
+    self.event_ids.include?(event_id)
   end
 
   def has_issue?(issue_id)
-    self.issue_ids.include?(issue)
+    self.issue_ids.include?(issue_id)
   end
 
   def follows_issue?(issue_id)
-   self.followed_issue_ids.include?(issue)
+   self.followed_issue_ids.include?(issue_id)
   end
 
   private

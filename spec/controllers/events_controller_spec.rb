@@ -11,6 +11,7 @@ describe EventsController do
                     "date_happened" => '1234567'}}
     @user = FactoryGirl.create(:user)
     sign_in @user
+    controller.current_user.stub(:has_event?).and_return true
     @user_goog = FactoryGirl.create(:user_google)
     @event = FactoryGirl.create(:event)
   end
@@ -44,7 +45,6 @@ describe EventsController do
   end
   describe 'delete' do
     it 'should delete the selected event' do
-      @user.events = [@event]
       Event.stub(:find) {@event}
       delete :delete, {:id => @event.id}
       response.body.should have_content "true"
@@ -52,6 +52,7 @@ describe EventsController do
 
     it 'should not delete the selected event if the user does not own the event' do
       Event.stub(:find) {@event}
+      controller.current_user.stub(:has_event?).and_return false
       delete :delete, {:id => @event.id}
       response.body.should have_content "false"
     end
@@ -84,7 +85,7 @@ describe EventsController do
     end
 
     it 'should not update a new event if validation fails' do
-      put :update, {:id => @event.id, :title => ""}
+      put :update, {:id => @event.id, :event => {:title => ""}}
       response.body.should have_content "false"
     end
   end
