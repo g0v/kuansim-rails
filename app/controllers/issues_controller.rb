@@ -1,13 +1,13 @@
 class IssuesController < ApplicationController
   require 'json'
 
-  skip_before_filter :require_login, except: [:create, :delete, :update]
+  skip_before_filter :require_login, except: [:create, :destroy, :update]
 
-  before_filter :need_id, only: [:delete, :update, :related]
+  before_filter :need_id, only: [:destroy, :update, :related]
 
-  before_filter :issue_exists, only: [:delete, :update]
+  before_filter :issue_exists, only: [:destroy, :update]
 
-  before_filter :issue_belongs, only: [:delete, :update]
+  before_filter :issue_belongs, only: [:destroy, :update]
 
   def create
     issue = Issue.create(params[:issue])
@@ -24,8 +24,8 @@ class IssuesController < ApplicationController
 
   end
 
-  def delete
-    Issue.delete(params[:id])
+  def destroy
+    Issue.destroy(params[:id])
     render json: { success: true }
   end
 

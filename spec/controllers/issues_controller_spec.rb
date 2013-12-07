@@ -26,8 +26,8 @@ describe IssuesController do
   describe 'delete' do
     it 'should delete the selected issue' do
       controller.current_user.stub(:has_issue?).and_return true
-      Issue.should_receive(:delete)
-      delete :delete, {:id => @issue.id}
+      Issue.should_receive(:destroy)
+      delete :destroy, {:id => @issue.id}
     end
   end
 

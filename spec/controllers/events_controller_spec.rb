@@ -46,14 +46,14 @@ describe EventsController do
   describe 'delete' do
     it 'should delete the selected event' do
       Event.stub(:find) {@event}
-      delete :delete, {:id => @event.id}
+      delete :destroy, {:id => @event.id}
       response.body.should have_content "true"
     end
 
     it 'should not delete the selected event if the user does not own the event' do
       Event.stub(:find) {@event}
       controller.current_user.stub(:has_event?).and_return false
-      delete :delete, {:id => @event.id}
+      delete :destroy, {:id => @event.id}
       response.body.should have_content "false"
     end
   end

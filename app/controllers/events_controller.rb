@@ -8,12 +8,12 @@ class EventsController < ApplicationController
   skip_before_filter :require_login, only: [:index, :show]
 
   # Check that params[:id] exists using function from ApplicationController
-  before_filter :need_id, only: [:delete, :show, :update]
+  before_filter :need_id, only: [:destroy, :show, :update]
 
-  before_filter :event_exists, only: [:delete, :show, :update]
+  before_filter :event_exists, only: [:destroy, :show, :update]
 
   # Use lambda to allow params[:id] argument
-  before_filter :event_belongs, only: [:update, :delete]
+  before_filter :event_belongs, only: [:update, :destroy]
 
   def create
     event_params = params[:event]
@@ -39,8 +39,8 @@ class EventsController < ApplicationController
     render json: { success: true }
   end
 
-  def delete
-    Event.delete(params[:id])
+  def destroy
+    Event.destroy(params[:id])
     render json: {success: true}
   end
 

@@ -57,7 +57,7 @@ Kuansim::Application.routes.draw do
   get '/users/verify', to: 'users#verify'
   get '/users/profile', to: 'users#current_profile'
   post  '/collections/bookmarks', to: 'events#create'
-  delete  '/collections/bookmarks/:id', to: 'events#delete'
+  delete  '/collections/bookmarks/:id', to: 'events#destroy'
   put '/collections/bookmarks/:id', to: 'events#update'
   get   '/collections/bookmarks', to: 'events#index'
   get  '/users/sign_out', to: 'users#destroy_session'
@@ -71,7 +71,7 @@ Kuansim::Application.routes.draw do
   get   '/collections/issues/:id', to: 'issues#timeline'
   post  '/collections/issues',  to: 'issues#create'
   put   '/collections/issues/:id', to: 'issues#update'
-  delete  '/collections/issues/:id', to: 'issues#delete'
+  delete  '/collections/issues/:id', to: 'issues#destroy'
   get '/collections/issues/:id/related', to: 'issues#related'
   get '/collections/issues/popular', to: 'issues#popular'
   ############################# ISSUE #############################
