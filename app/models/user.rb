@@ -52,16 +52,16 @@ class User < ActiveRecord::Base
     end
   end
 
-  def has_event?(event)
-    self.events.include?(event)
+  def has_event?(event_id)
+    self.event_ids.include?(event)
   end
 
-  def has_issue?(issue)
-    self.issues.include?(issue)
+  def has_issue?(issue_id)
+    self.issue_ids.include?(issue)
   end
 
-  def follows_issue?(issue)
-   self.followed_issues.include?(issue)
+  def follows_issue?(issue_id)
+   self.followed_issue_ids.include?(issue)
   end
 
   private

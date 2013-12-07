@@ -120,8 +120,7 @@ class IssuesController < ApplicationController
   private
 
     def issue_belongs
-      issue = Issue.find(params[:id])
-      unless current_user.has_issue?(issue)
+      unless current_user.has_issue?(params[:id])
         render json: {
           success: false,
           message: "You don't have permission to edit this issue"

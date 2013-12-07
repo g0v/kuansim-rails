@@ -54,7 +54,7 @@ class UsersController < ApplicationController
   def follows_issue?
     render json: {
       success: true,
-      follows: current_user.follows_issue?(Issue.find(params[:id]))
+      follows: current_user.follows_issue?(params[:id])
     }
   end
 

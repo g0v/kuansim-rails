@@ -120,8 +120,7 @@ class EventsController < ApplicationController
   private
 
     def event_belongs
-      event = Event.find(params[:id])
-      unless current_user.has_event?(event)
+      unless current_user.has_event?(params[:id])
         render json: {
           success: false,
           message: "You don't have permission to edit this event"
