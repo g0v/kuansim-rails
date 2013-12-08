@@ -58,8 +58,8 @@ describe IssuesController do
 
     it "should successfully return data json for given issue" do
       load "#{Rails.root}/db/seeds.rb"
-      id = Issue.find_by_title("Issue 0").id
-      get :timeline, id: id
+      title = Issue.find_by_title("Issue 0").title
+      get :timeline, id: title
       response.body.should have_content("Issue 0")
     end
   end
