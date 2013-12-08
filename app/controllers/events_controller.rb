@@ -2,6 +2,7 @@ require 'json'
 require 'date'
 require 'net/http' # for handling request
 require 'uri'
+require 'opengraph_parser'
 
 class EventsController < ApplicationController
 
@@ -72,6 +73,7 @@ class EventsController < ApplicationController
       issue_title_lst << i.title
     end
     render json: {
+<<<<<<< HEAD
       :success => true,
       :event => {
         :title => event.title,
@@ -81,6 +83,10 @@ class EventsController < ApplicationController
         :issues => issue_title_lst.join(', '),
         :description => event.description
       }
+=======
+      success: true,
+      event: add_og_tags(event.attributes).to_json
+>>>>>>> master
     }
   end
 
@@ -97,7 +103,7 @@ class EventsController < ApplicationController
 
     render json: {
       success: true,
-      events: event_list
+      events: event_list.map{ |e| add_og_tags(e.attributes).to_json }
     }
   end
 
@@ -169,5 +175,19 @@ class EventsController < ApplicationController
         }
         return false
       end
+    end
+
+    def add_og_tags(ret_event_json)
+      url = ret_event_json[:url]
+      if (url)
+        og = OpenGraph.new(url)
+        og_tags = {
+          title: og.title,
+          description: og.description,
+          images: og.images
+        }
+        ret_event_json.og = og_tags
+      end
+      return ret_event_json
     end
 end
