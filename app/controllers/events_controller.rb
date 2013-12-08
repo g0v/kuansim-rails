@@ -152,7 +152,7 @@ class EventsController < ApplicationController
   private
 
     def event_belongs
-      unless current_user.has_event?(params[:id])
+      unless current_user.has_event?(params[:id].to_i)
         render json: {
           success: false,
           message: "You don't have permission to edit this event"
@@ -162,7 +162,7 @@ class EventsController < ApplicationController
     end
 
     def event_exists
-      unless Event.exists?(id: params[:id])
+      unless Event.exists?(id: params[:id].to_i)
         render json: {
           success: false,
           message: "Event does not exist"
