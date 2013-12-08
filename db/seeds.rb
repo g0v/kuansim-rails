@@ -46,8 +46,8 @@ event1 = Event.create(
   title: "The Syrian civil war is breeding a new generation of terrorist",
   description:  "Hundreds of radicalised young Muslims are reported to have made their way to Syria from " +
                 "other Western nations, such as the US, Canada and France, while intelligence officials " +
-                "have been surprised at the large number of Australian nationals – estimated at around 200 " +
-                "– who have travelled halfway round the world to fight.",
+                "have been surprised at the large number of Australian nationals - estimated at around 200 " +
+                "- who have travelled halfway round the world to fight.",
   date_happened: DateTime.parse("2011-03-15"),
   location: "Syria",
   url: "http://www.telegraph.co.uk/news/worldnews/middleeast/syria/10491523/The-Syrian-civil-war-is-breeding-a-new-generation-of-terrorist.html"
