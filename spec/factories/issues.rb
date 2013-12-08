@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :issue do
-    title 'Bart Strike'
-    description "Renegotiating employee contract."
+    title 'Obamacare'
+    description "Obama's landmark healthcare bill."
   end
 
   factory :drinking_issue, :class => Issue do
