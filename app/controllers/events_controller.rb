@@ -68,9 +68,20 @@ class EventsController < ApplicationController
 
   def show
     event = Event.find(params[:id])
+    issue_title_lst = []
+    event.issues.each do |i|
+      issue_title_lst << i.title
+    end
     render json: {
       :success => true,
-      :event => event
+      :event => {
+        :title => event.title,
+        :date_happened => event.date_happened,
+        :url => event.url,
+        :location => event.location,
+        :issues => issue_title_lst.join(', '),
+        :description => event.description
+      }
     }.to_json
   end
 
