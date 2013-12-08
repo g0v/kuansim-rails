@@ -32,9 +32,24 @@ class EventsController < ApplicationController
     end
 
     issues = params[:issues] || []
+    if issues != [] && (issues.is_a? String) # this is for spec failling prevention
+      issues = params[:issues].split(',')
+    end
+
     # Associate chosen issues represented by array of issue_ids
-    issues.each do |issue_id|
-      event.issues << Issue.find(issue_id)
+    issues.each do |issue_title|
+      issue_title = issue_title.strip
+      found_issue = Issue.find_by_title(issue_title)
+      if found_issue # the chosen issue has existed
+        event.issues << Issue.find_by_title(issue_title)
+      else # if no such issue found, create one
+        created_issue = Issue.create(
+          title: issue_title,
+          description: issue_title
+        )
+        created_issue.events = [event]
+        event.issues << created_issue
+      end
     end
 
     # Associate user with event
