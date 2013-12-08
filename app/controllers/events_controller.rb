@@ -5,7 +5,7 @@ require 'uri'
 
 class EventsController < ApplicationController
 
-  skip_before_filter :require_login, only: [:index, :show]
+  skip_before_filter :require_login, only: [:index, :show, :add_to_bookmark_btn]
 
   # Check that params[:id] exists using function from ApplicationController
   before_filter :need_id, only: [:destroy, :show, :update]
