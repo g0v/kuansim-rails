@@ -5,7 +5,7 @@ require 'uri'
 
 class EventsController < ApplicationController
 
-  skip_before_filter :require_login, only: [:index, :show]
+  skip_before_filter :require_login, only: [:index, :show, :add_to_bookmark_btn]
 
   # Check that params[:id] exists using function from ApplicationController
   before_filter :need_id, only: [:destroy, :show, :update]
@@ -152,7 +152,7 @@ class EventsController < ApplicationController
   private
 
     def event_belongs
-      unless current_user.has_event?(params[:id])
+      unless current_user.has_event?(params[:id].to_i)
         render json: {
           success: false,
           message: "You don't have permission to edit this event"
@@ -162,7 +162,7 @@ class EventsController < ApplicationController
     end
 
     def event_exists
-      unless Event.exists?(id: params[:id])
+      unless Event.exists?(id: params[:id].to_i)
         render json: {
           success: false,
           message: "Event does not exist"

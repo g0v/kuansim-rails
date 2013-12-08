@@ -91,40 +91,47 @@ class IssuesController < ApplicationController
   def timeline
     issue_title = params[:id]
     issue = Issue.find_by_title(issue_title)
-    bookmark_list = []
-    issue.events.each do |event|
-      another_issue = nil
-      event.issues.each do |issue_tag|
-        if issue_tag.title != issue.title
-          another_issue = issue_tag.title
-          break
+    if issue.events != []
+      bookmark_list = []
+      issue.events.each do |event|
+        another_issue = nil
+        event.issues.each do |issue_tag|
+          if issue_tag.title != issue.title
+            another_issue = issue_tag.title
+            break
+          end
         end
+        bookmark_list << {
+          :startDate => "#{event.date_happened.year},#{event.date_happened.month},#{event.date_happened.day}",
+          :headline => event.title,
+          :text => event.description,
+          :tag => another_issue,
+          :asset => {
+            :media => event.url,
+            :credit => "",
+            :caption => ""
+          }
+        }
       end
-      bookmark_list << {
-        :startDate => "#{event.date_happened.year},#{event.date_happened.month},#{event.date_happened.day}",
-        :headline => event.title,
-        :text => event.description,
-        :tag => another_issue,
-        :asset => {
-          :media => event.url,
-          :credit => "",
-          :caption => ""
+      render json: {
+        :timeline => {
+          :headline => issue.title,
+          :type => "default",
+          :text => issue.description,
+          :asset => {
+            :media => bookmark_list.first[:asset][:media],
+            :credit => "",
+            :caption => ""
+          },
+          :date => bookmark_list
         }
       }
-    end
-    render json: {
-      :timeline => {
-        :headline => issue.title,
-        :type => "default",
-        :text => issue.description,
-        :asset => {
-          :media => bookmark_list.first[:asset][:media],
-          :credit => "",
-          :caption => ""
-        },
-        :date => bookmark_list
+    else
+      render json: {
+        :timeline => nil,
+        :message => 'There is no bookmark associated with this issue'
       }
-    }
+    end
   end
 
   private
