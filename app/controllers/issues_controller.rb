@@ -118,7 +118,7 @@ class IssuesController < ApplicationController
         :type => "default",
         :text => issue.description,
         :asset => {
-          :media => "",
+          :media => bookmark_list.first[:asset][:media],
           :credit => "",
           :caption => ""
         },
