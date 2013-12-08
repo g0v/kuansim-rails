@@ -64,10 +64,10 @@ describe IssuesController do
     end
 
     it "should successfully return data json for given issue" do
-      load "#{Rails.root}/db/seeds.rb"
-      title = Issue.find_by_title("Issue 0").title
+      title = @issue.title
+      @issue.events << FactoryGirl.create(:event)
       get :timeline, id: title
-      response.body.should have_content("Issue 0")
+      response.body.should have_content(title)
     end
   end
 
