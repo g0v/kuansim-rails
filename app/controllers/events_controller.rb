@@ -21,9 +21,8 @@ class EventsController < ApplicationController
       params[:issues] = event_params[:issues]
       event_params.delete('issues')
     end
-    if event_params && !(event_params[:date_happened].is_a? Integer) # jQuery will automatically make the
-                                                     # request string, parse it to integer
-      event_params[:date_happened] = event_params[:date_happened].to_f
+    if event_params
+      event_params[:date_happened] = event_params[:date_happened].to_i
     end
     event = Event.create(event_params)
     if event.invalid?
@@ -70,9 +69,9 @@ class EventsController < ApplicationController
   def show
     event = Event.find(params[:id])
     render json: {
-      success: true,
-      event: event.to_json
-    }
+      :success => true,
+      :event => event
+    }.to_json
   end
 
   def index
