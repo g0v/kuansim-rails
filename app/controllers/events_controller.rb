@@ -82,7 +82,7 @@ class EventsController < ApplicationController
         :issues => issue_title_lst.join(', '),
         :description => event.description
       }
-    }.to_json
+    }
   end
 
   def index

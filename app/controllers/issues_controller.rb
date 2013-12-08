@@ -103,19 +103,22 @@ class IssuesController < ApplicationController
   end
 
   def timeline
-    issue_id = params[:id]
-    issue = Issue.find_by_id(issue_id)
+    issue_title = params[:id]
+    issue = Issue.find_by_title(issue_title)
     bookmark_list = []
     issue.events.each do |event|
-      issue_list = []
+      another_issue = nil
       event.issues.each do |issue_tag|
-        issue_list << issue_tag.title
+        if issue_tag.title != issue.title
+          another_issue = issue_tag.title
+          break
+        end
       end
       bookmark_list << {
         :startDate => "#{event.date_happened.year},#{event.date_happened.month},#{event.date_happened.day}",
         :headline => event.title,
         :text => event.description,
-        :tag => issue_list.join(", "),
+        :tag => another_issue,
         :asset => {
           :media => event.url,
           :credit => "",
