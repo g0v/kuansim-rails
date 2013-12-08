@@ -35,8 +35,8 @@ class EventsController < ApplicationController
     end
 
     issues = params[:issues] || []
-    if issues != [] && (issues.is_a? String) # this is for spec failling prevention
-      issues = params[:issues].split(',')
+    if issues != []
+      issues = issues.split(',')
     end
 
     # Associate chosen issues represented by array of issue_ids
@@ -47,8 +47,7 @@ class EventsController < ApplicationController
         event.issues << Issue.find_by_title(issue_title)
       else # if no such issue found, create one
         created_issue = Issue.create(
-          title: issue_title,
-          description: issue_title
+          title: issue_title
         )
         created_issue.events = [event]
         event.issues << created_issue

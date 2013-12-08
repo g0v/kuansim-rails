@@ -63,19 +63,18 @@ Kuansim::Application.routes.draw do
   get  '/users/sign_out', to: 'users#destroy_session'
   post '/users/issues/follow', to: 'users#follow_issue'
   get '/users/issues/:id/follows', to: 'users#follows_issue?'
-  get '/users/:id/:issue_id', to: 'users#get_user_events_by_issue'
+  get '/users/:id/issue/:issue_id/events', to: 'users#get_user_events_by_issue'
   get '/users/:id/issues', to: 'users#followed_issues'
   post '/users/issues/unfollow', to: 'users#unfollow_issue'
 
   ############################# ISSUE #############################
   get   '/collections/issues', to: 'issues#index'
+  get '/collections/issues/popular', to: 'issues#popular'
   get   '/collections/issues/:id', to: 'issues#timeline'
   post  '/collections/issues',  to: 'issues#create'
   put   '/collections/issues/:id', to: 'issues#update'
   delete  '/collections/issues/:id', to: 'issues#destroy'
   get '/collections/issues/:id/related', to: 'issues#related'
-  get '/collections/issues/popular', to: 'issues#popular'
-  post '/collections/issues/exist', to: 'issues#exist'
   ############################# ISSUE #############################
 
   get   '/collections/bookmarks/:id', to: 'events#show'

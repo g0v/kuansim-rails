@@ -9,7 +9,7 @@ class Issue < ActiveRecord::Base
   has_many :events,
     through: :events_issues, uniq: true
   validates :title, presence: true, uniqueness: true
-  validates :description, presence: true
+  # validates :description, presence: true
 
   # Will order by count of events
   scope :popular, where('events_count > 0').order('events_count DESC')

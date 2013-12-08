@@ -4,7 +4,7 @@ class UsersController < ApplicationController
 
   skip_before_filter :try_cookie_login, only: [:authenticate, :login]
 
-  skip_before_filter :require_login, only: [:authenticate, :verify, :followed_issues, :login]
+  skip_before_filter :require_login, only: [:authenticate, :verify, :login, :follow_issue, :unfollow_issue]
 
   before_filter :need_id, only: [:unfollow_issue, :follow_issue, :follows_issue?, :followed_issues]
   before_filter :issue_exists, only: [:unfollow_issue, :follow_issue, :follows_issue?]
@@ -66,17 +66,20 @@ class UsersController < ApplicationController
 
   # Get followed issues of any user
   def followed_issues
-    return_json = []
+    issues_list = []
     user = User.find(params[:id])
     followed_issues = user.followed_issues
     followed_issues.each do |issue|
-      return_json << {
+      issues_list << {
         id: issue.id,
         title: issue.title,
         description: issue.description,
       }
     end
-    render json: return_json
+    render json: {
+      success: true,
+      issues: issues_list
+    }
   end
 
   def destroy_session
