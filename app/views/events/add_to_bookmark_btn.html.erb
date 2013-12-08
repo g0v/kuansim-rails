@@ -61,7 +61,10 @@
                   a();
                 }, 500);
               }
-            } else $('.alert-danger').show();
+            } else {
+              $('.alert-danger').show();
+              $('#save_bookmark_btn').prop('disabled', false).text('Save bookmark');
+            }
           }
         });
       });
