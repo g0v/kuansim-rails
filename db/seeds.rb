@@ -6,36 +6,75 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
+######USERS######
+
+user1 = User.create(
+  email: "mscott2000@gmail.com",
+  name: "Michael Scott"
+)
+
+user2 = User.create(
+  email: "ajenson999@hotmail.com",
+  name: "Adam Jenson"
+)
+
+user3 = User.create(
+  email: "nbrody43@gmail.com",
+  name: "Nicholas Brody"
+)
+
+######END USERS######
+
+######ISSUES######
+
 issue1 = Issue.create(
-  title: 'Issue 0',
-  description: 'Jerry\'s drinking problem.'
+  title: "Arab Spring",
+  description:  "A revolutionary wave of demonstrations and protests (both non-violent and violent), " +
+                "riots, and civil wars in the Arab world."
 )
 
 issue2 = Issue.create(
-  title: 'Serious Sunday Workload',
-  description: "Can we have Sunday off not working on anything?"
+  title: "Bart Strike 2013",
+  description: "The Bay Area Rapid Transit strike of 2013."
 )
 
-issue2.events << Event.create(
-  title: "I basically just want to sleep",
-  date_happened: DateTime.now,
-  location: 'On my bed',
-  description: 'But right now I need to work on this project',
-  url: 'http://www.bbc.com'
+######END ISSUES######
+
+######EVENTS######
+
+event1 = Event.create(
+  title: "The Syrian civil war is breeding a new generation of terrorist",
+  description:  "Hundreds of radicalised young Muslims are reported to have made their way to Syria from " +
+                "other Western nations, such as the US, Canada and France, while intelligence officials " +
+                "have been surprised at the large number of Australian nationals – estimated at around 200 " +
+                "– who have travelled halfway round the world to fight.",
+  date_happened: DateTime.parse("2011-03-15"),
+  location: "Syria",
+  url: "http://www.telegraph.co.uk/news/worldnews/middleeast/syria/10491523/The-Syrian-civil-war-is-breeding-a-new-generation-of-terrorist.html"
 )
 
-issue1.events << Event.create(
-  title: 'Group Meeting Binge Drinking',
-  date_happened: DateTime.parse('2013-11-10'),
-  location: 'Jerry\'s Place',
-  description: '5 Beers!',
-  url: 'http://www.ddc.com'
+event2 = Event.create(
+  title: "Tentative End to BART Strike",
+  description: "Union officials are announcing a tentative end to the four-day BART transit strike.",
+  date_happened: DateTime.parse("2013-10-20"),
+  location: "San Francisco",
+  url: "http://www.usatoday.com/story/news/nation/2013/10/20/bart-strike-san-francisco-monday/3096849/"
 )
 
-issue1.events << Event.create(
-  title: 'Intervention',
-  date_happened: DateTime.parse('2013-11-10'),
-  location: 'Jerry\'s Place',
-  description: 'We love you, Jerry. Please stop hurting yourself!',
-  url: 'http://www.eec.com'
-)
+######END EVENTS######
+
+######RELATIONS######
+
+#user-issue relations#
+user3.issues << issue1
+user1.issues << issue2
+
+#user-event relations#
+user2.events << event1
+user3.events << event2
+
+#event-issue relations#
+issue1.events << event1
+issue2.events << event2
+
+######END RELATIONS######
