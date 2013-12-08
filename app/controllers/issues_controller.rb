@@ -105,19 +105,19 @@ class IssuesController < ApplicationController
   def timeline
     issue_id = params[:id]
     issue = Issue.find_by_id(issue_id)
-    events_list = []
+    bookmark_list = []
     issue.events.each do |event|
-      tags_list = []
-      event.tags.each do |tag|
-        tags_list << tag.name
+      issue_list = []
+      event.issues.each do |issue_tag|
+        issue_list << issue_tag.title
       end
-      events_list << {
+      bookmark_list << {
         :startDate => "#{event.date_happened.year},#{event.date_happened.month},#{event.date_happened.day}",
         :headline => event.title,
         :text => event.description,
-        :tag => tags_list.join(", "),
+        :tag => issue_list.join(", "),
         :asset => {
-          :media => "",
+          :media => event.url,
           :credit => "",
           :caption => ""
         }
@@ -133,7 +133,7 @@ class IssuesController < ApplicationController
           :credit => "",
           :caption => ""
         },
-        :date => events_list
+        :date => bookmark_list
       }
     }
   end
