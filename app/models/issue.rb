@@ -8,7 +8,7 @@ class Issue < ActiveRecord::Base
     class_name: "User", uniq: true
   has_many :events,
     through: :events_issues, uniq: true
-  validates :title, presence: true
+  validates :title, presence: true, uniqueness: true
   validates :description, presence: true
 
   # Will order by count of events

@@ -68,13 +68,14 @@ Kuansim::Application.routes.draw do
   post '/users/issues/unfollow', to: 'users#unfollow_issue'
 
   ############################# ISSUE #############################
-  get   '/collections/issues', to: 'issues#list_all_issues'
+  get   '/collections/issues', to: 'issues#index'
   get   '/collections/issues/:id', to: 'issues#timeline'
   post  '/collections/issues',  to: 'issues#create'
   put   '/collections/issues/:id', to: 'issues#update'
   delete  '/collections/issues/:id', to: 'issues#destroy'
   get '/collections/issues/:id/related', to: 'issues#related'
   get '/collections/issues/popular', to: 'issues#popular'
+  post '/collections/issues/exist', to: 'issues#exist'
   ############################# ISSUE #############################
 
   get   '/collections/bookmarks/:id', to: 'events#show'
