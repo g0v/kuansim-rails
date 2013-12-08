@@ -35,8 +35,8 @@ class EventsController < ApplicationController
     end
 
     issues = params[:issues] || []
-    if issues != [] && (issues.is_a? String) # this is for spec failing prevention
-      issues = params[:issues].split(',')
+    if issues != []
+      issues = issues.split(',')
     end
 
     # Associate chosen issues represented by array of issue_ids

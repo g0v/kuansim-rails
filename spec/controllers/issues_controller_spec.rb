@@ -79,8 +79,8 @@ describe IssuesController do
 
     it 'lists all the issues' do
       get :index
-      response.body.should have_content("Bart Strike")
-      response.body.should have_content("Binge Drinking in College")
+      response.body.should have_content(@bart.title)
+      response.body.should have_content(@drinking.title)
       response.body.should have_content("true")
     end
   end

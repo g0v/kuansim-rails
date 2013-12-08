@@ -66,17 +66,20 @@ class UsersController < ApplicationController
 
   # Get followed issues of any user
   def followed_issues
-    return_json = []
+    issues_list = []
     user = User.find(params[:id])
     followed_issues = user.followed_issues
     followed_issues.each do |issue|
-      return_json << {
+      issues_list << {
         id: issue.id,
         title: issue.title,
         description: issue.description,
       }
     end
-    render json: return_json
+    render json: {
+      success: true,
+      issues: issues_list
+    }
   end
 
   def destroy_session

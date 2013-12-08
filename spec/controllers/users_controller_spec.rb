@@ -99,7 +99,7 @@ describe UsersController do
 
     it 'should return whether the current user follows the given issue' do
       @user.followed_issues << @issue
-      get :follows_issue, {:id => @issue.id}
+      get :follows_issue?, {:id => @issue.id}
       response.body.should have_content "true"
     end
   end
