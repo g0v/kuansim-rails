@@ -39,7 +39,13 @@ describe EventsController do
     end
 
     it 'should create a new event if a list of issues is given' do
-      @fake_data["issues"] = [FactoryGirl.create(:issue)]
+      @fake_data["issues"] = [FactoryGirl.create(:issue).title]
+      post :create, @fake_data
+      response.body.should have_content "true"
+    end
+
+    it 'should create a new event as well as the nonexistent issues' do
+      @fake_data["issues"] = ["Nonexistent_1"]
       post :create, @fake_data
       response.body.should have_content "true"
     end

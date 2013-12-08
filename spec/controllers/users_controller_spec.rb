@@ -68,6 +68,42 @@ describe UsersController do
 
   end
 
+  describe "following and unfollowing issues" do
+    before :each do
+      sign_in @user
+      @issue = FactoryGirl.create(:issue)
+    end
+
+    it 'should follow the given issue' do
+      post :follow_issue, {:id => @issue.id}
+      response.body.should have_content "true"
+    end
+
+    it 'should not follow a nonexistent issue' do
+      post :follow_issue, {:id => 999}
+      response.body.should have_content "false"
+    end
+
+    it 'should unfollow the given issue' do
+      @user.followed_issues << @issue
+      post :unfollow_issue, {:id => @issue.id}
+      response.body.should have_content "true"
+    end
+
+    it 'should return followed issues' do
+      @user.followed_issues << @issue
+      get :followed_issues, {:id => @user.id}
+      response.body.should have_content "true"
+      response.body.should have_content @issue.title
+    end
+
+    it 'should return whether the current user follows the given issue' do
+      @user.followed_issues << @issue
+      get :follows_issue, {:id => @issue.id}
+      response.body.should have_content "true"
+    end
+  end
+
   describe "get_user_events_by_issue" do
     before :each do
       @power_user = FactoryGirl.create(:power_user)
