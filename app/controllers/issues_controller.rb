@@ -81,26 +81,25 @@ class IssuesController < ApplicationController
       issue.to_hash.merge(
         isFollowed: current_user.follows_issue?(issue.id)
       )
-
+    end
     render json: {
       success: true,
       issues: issues
     }
-    end
   end
 
-  def list_all_issues
-    return_json = []
-    Issue.find(:all).each do |issue|
-      return_json << {
-        id: issue.id,
-        title: issue.title,
-        description: issue.description,
-        isFollowed: current_user.follows_issue?(issue.id)
-      }
-    end
-    render json: return_json
-  end
+  # def list_all_issues
+  #   return_json = []
+  #   Issue.find(:all).each do |issue|
+  #     return_json << {
+  #       id: issue.id,
+  #       title: issue.title,
+  #       description: issue.description,
+  #       isFollowed: current_user.follows_issue?(issue.id)
+  #     }
+  #   end
+  #   render json: return_json
+  # end
 
   def timeline
     issue_id = params[:id]

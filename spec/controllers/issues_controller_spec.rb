@@ -5,15 +5,22 @@ describe IssuesController do
     @user = FactoryGirl.create(:user)
     sign_in @user
     @fake_data = {"issue" => {
-                    "title" => 'Bart Strike',
-                    "description" => "Renegotiating employee contract."}}
+                    "title" => 'Obamacare',
+                    "description" => "Obama's landmark healthcare bill."}}
     @issue = FactoryGirl.create(:issue)
     @user.issues << @issue
+
+    @bart = FactoryGirl.create(:bart_strike_issue)
+    @drinking = FactoryGirl.create(:drinking_issue)
+    @malaysia = FactoryGirl.create(:malaysia_strike_issue)
+    @bart_event = FactoryGirl.build(:bart_event)
+    @drink_event = FactoryGirl.build(:freshmen_drink)
+    @malaysia_event = FactoryGirl.build(:malaysia_event)
   end
 
   describe 'create' do
     it 'should create a new issue' do
-      post :create, @fake_data
+      post :create, {"issue" => {"title" => 'NSA Spying', "description" => 'NSA Spying Scandal'}}
       response.body.should have_content "true"
     end
 
@@ -66,88 +73,27 @@ describe IssuesController do
 
   describe 'listing all issues' do
     before :each do
-      first = mock(Issue)
-      first.stub(:id).and_return('1')
-      first.stub(:title).and_return('first issue title')
-      first.stub(:description).and_return('issue description')
-
-      second = mock(Issue)
-      second.stub(:id).and_return('2')
-      second.stub(:title).and_return('second issue title')
-      second.stub(:description).and_return('issue description2')
-
-      issues = [first, second]
-
-      Issue.stub(:find).and_return(issues)
+      issues = [@bart, @drinking]
+      Issue.stub(:all).and_return(issues)
     end
-
 
     it 'lists all the issues' do
-      get :list_all_issues
-      response.body.should have_content("1")
-      response.body.should have_content("2")
-      response.body.should have_content("first issue title")
-      response.body.should have_content("second issue title")
-      response.body.should have_content("issue description2")
+      get :index
+      response.body.should have_content("Bart Strike")
+      response.body.should have_content("Binge Drinking in College")
+      response.body.should have_content("true")
     end
-
-
-
-  end
-
-  describe 'listing all issues' do
-    before :each do
-      first = mock(Issue)
-      first.stub(:id).and_return('1')
-      first.stub(:title).and_return('first issue title')
-      first.stub(:description).and_return('issue description')
-
-      second = mock(Issue)
-      second.stub(:id).and_return('2')
-      second.stub(:title).and_return('second issue title')
-      second.stub(:description).and_return('issue description2')
-
-      issues = [first, second]
-
-      Issue.stub(:find).and_return(issues)
-    end
-
-
-    it 'lists all the issues' do
-      get :list_all_issues
-      response.body.should have_content("1")
-      response.body.should have_content("2")
-      response.body.should have_content("first issue title")
-      response.body.should have_content("second issue title")
-      response.body.should have_content("issue description2")
-    end
-
   end
 
   describe "related issues" do
 
     before :each do
-      @bart = Issue.create(
-        title: 'Bart Strike',
-        description: 'Workers want more stuff'
-        )
-      @drinking = Issue.create(
-        title: 'College Drinking',
-        description: 'Increased drinking in college'
-        )
-      @malaysia = Issue.create(
-        title: 'Strike in Malaysia',
-        description: 'Rice farmers want more shit'
-        )
-      bart_event = FactoryGirl.build(:bart_event)
-      drink_event = FactoryGirl.build(:freshmen_drink)
-      malaysia_event = FactoryGirl.build(:malaysia_event)
-      [bart_event, malaysia_event].each do |event|
+      [@bart_event, @malaysia_event].each do |event|
         event.issues << @bart
         event.issues << @malaysia
       end
-      drink_event.issues << @drinking
-      [bart_event, drink_event, malaysia_event].each {|event| event.save }
+      @drink_event.issues << @drinking
+      [@bart_event, @drink_event, @malaysia_event].each {|event| event.save }
     end
 
     it "should be successfully found and displayed" do
@@ -166,26 +112,10 @@ describe IssuesController do
   describe "popular" do
 
     before :each do
-      @bart = Issue.create(
-        title: 'Bart Strike',
-        description: 'Workers want more stuff'
-        )
-      @drinking = Issue.create(
-        title: 'College Drinking',
-        description: 'Increased drinking in college'
-        )
-      @malaysia = Issue.create(
-        title: 'Strike in Malaysia',
-        description: 'Rice farmers want more shit'
-        )
-      bart_event = FactoryGirl.build(:bart_event)
-      drink_event = FactoryGirl.build(:freshmen_drink)
-      malaysia_event = FactoryGirl.build(:malaysia_event)
-
-      [bart_event, malaysia_event].each do |event|
+      [@bart_event, @malaysia_event].each do |event|
         @bart.events << event
       end
-      @malaysia.events << malaysia_event
+      @malaysia.events << @malaysia_event
     end
 
     it "should correctly return the issues with the most events" do
