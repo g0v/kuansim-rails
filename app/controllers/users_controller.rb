@@ -4,7 +4,7 @@ class UsersController < ApplicationController
 
   skip_before_filter :try_cookie_login, only: [:authenticate, :login]
 
-  skip_before_filter :require_login, only: [:authenticate, :verify, :login, :follow_issue, :unfollow_issue]
+  skip_before_filter :require_login, only: [:authenticate, :verify, :login, :follow_issue, :unfollow_issue, :created_events]
 
   before_filter :need_id, only: [:unfollow_issue, :follow_issue, :follows_issue?, :followed_issues]
   before_filter :issue_exists, only: [:unfollow_issue, :follow_issue, :follows_issue?]
