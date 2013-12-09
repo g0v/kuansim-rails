@@ -105,9 +105,15 @@ describe UsersController do
   end
 
   describe "created_events" do
-    it 'should return events created by the given user' do
+    it 'should return events created by the given user if user exists' do
       @user.events << FactoryGirl.create(:event)
+      get :created_events, {:id => @user.id}
       response.body.should have_content "true"
+    end
+
+    it 'should not return events created by the user if the given user does not exist' do
+      get :created_events, {:id => 9999}
+      response.body.should have_content "false"
     end
   end
 end
