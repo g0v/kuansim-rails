@@ -107,7 +107,7 @@ class UsersController < ApplicationController
     }
   end
 
-  def created_issues
+  def created_events
     json_reply = {success: true}
     events = []
     u_id = params[:id]
