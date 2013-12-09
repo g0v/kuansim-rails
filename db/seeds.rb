@@ -23,6 +23,13 @@ user3 = User.create(
   name: "Nicholas Brody"
 )
 
+User.create!(name: "Andrew Chen",
+        provider: "Facebook",
+        uid: "1",
+        email: "aychen92@gmail.com",
+        password: Devise.friendly_token[0, 20]
+)
+
 ######END USERS######
 
 ######ISSUES######
