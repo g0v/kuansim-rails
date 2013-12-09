@@ -188,6 +188,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  addressable (~> 2.3.5)
   capybara
   coffee-rails (~> 3.2.1)
   cucumber-rails

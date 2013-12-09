@@ -114,7 +114,11 @@ class UsersController < ApplicationController
       json_reply[:success] = false
       json_reply[:message] = "User does not exist."
     else
-      events = user.events.map{ |e| e.as_json[:og] = e.og_tags }
+      events = user.events.map do |e|
+        event = e.as_json
+        event[:og] = e.og_tags
+        event
+      end
     end
     json_reply[:events] = events
     render json: json_reply
