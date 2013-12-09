@@ -1,4 +1,5 @@
 require 'date'
+require 'opengraph_parser'
 
 class Event < ActiveRecord::Base
   attr_accessible :date_happened, :description, :location, :title, :issue_id, :user_id, :url
@@ -17,12 +18,34 @@ class Event < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    {:id            => self.id,
-     :title         => self.title,
-     :date_happened => self.date_happened,
-     :location      => self.location,
-     :description   => self.description,
-     :url           => self.url
-   }
+    {
+      :id            => self.id,
+      :title         => self.title,
+      :date_happened => self.date_happened,
+      :location      => self.location,
+      :description   => self.description,
+      :url           => self.url
+    }
+  end
+
+  def issues_titles_list
+    issue_title_list = []
+    self.issues.each do |i|
+      issue_title_list << i.title
+    end
+    return issue_title_list
+  end
+
+  def og_tags
+    url = self.url
+    if (url)
+      og = OpenGraph.new(url)
+      og_tags = {
+        title: og.title,
+        description: og.description,
+        images: og.images
+      }
+    end
+    return og_tags
   end
 end
