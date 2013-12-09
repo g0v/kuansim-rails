@@ -109,15 +109,11 @@ class UsersController < ApplicationController
 
   def created_events
     json_reply = {success: true}
-    events = []
-    u_id = params[:id]
-    i_id = params[:issue_id]
-    if !is_int? u_id or !is_int? i_id
-      json_reply[:success] = false
-      json_reply[:message] = "A user_id and issue_id must be provided."
+    events = User.find_by_id(params[:id]);
+    if (events.nil?)
+      events = []
     else
-      events = User.find(u_id).events.select{ |e| e.issues.include?(Issue.find(i_id)) }
-      json_reply[:message] = "Events of the given user that are associated with the given issue were returned."
+      events = events.map{ |e| e.as_json[:og] = e.og_tags }
     end
     json_reply[:events] = events
     render json: json_reply
