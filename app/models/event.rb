@@ -2,6 +2,7 @@ require 'date'
 require 'opengraph_parser'
 
 class Event < ActiveRecord::Base
+
   attr_accessible :date_happened, :description, :location, :title, :issue_id, :user_id, :url
   belongs_to :user
 

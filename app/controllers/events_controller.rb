@@ -89,7 +89,11 @@ class EventsController < ApplicationController
 
     render json: {
       success: true,
-      events: event_list.map{ |e| e.as_json[:og] = e.og_tags }
+      events: event_list.map do |e|
+        event = e.as_json
+        event[:og] = e.og_tags
+        event
+      end
     }
   end
 
