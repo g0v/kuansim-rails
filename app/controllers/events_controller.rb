@@ -67,10 +67,6 @@ class EventsController < ApplicationController
 
   def show
     event = Event.find(params[:id])
-    # issue_title_lst = []
-    # event.issues.each do |i|
-    #   issue_title_lst << i.title
-    # end
     event_json = event.as_json
     event_json[:issues] = event.issues_titles_list
     event_json[:og] = event.og_tags
@@ -78,22 +74,6 @@ class EventsController < ApplicationController
       success: true,
       event: event_json
     }
-#     render json: {
-# <<<<<<< HEAD
-#       :success => true,
-#       :event => {
-#         :title => event.title,
-#         :date_happened => event.date_happened,
-#         :url => event.url,
-#         :location => event.location,
-#         :issues => issue_title_lst.join(', '),
-#         :description => event.description
-#       }
-# =======
-#       success: true,
-#       event: add_og_tags(event.attributes).to_json
-# >>>>>>> master
-    # }
   end
 
   def index
@@ -109,7 +89,11 @@ class EventsController < ApplicationController
 
     render json: {
       success: true,
-      events: event_list.map{ |e| e.as_json[:og] = e.og_tags }
+      events: event_list.map do |e|
+        event = e.as_json
+        event[:og] = e.og_tags
+        event
+      end
     }
   end
 
