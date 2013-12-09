@@ -61,7 +61,7 @@ class IssuesController < ApplicationController
       sort_by {|k, v| v}.
       reverse[0..4].
       map {|k, v| k.to_json}
-
+      
     render json: {
       success: true,
       related: related_issues

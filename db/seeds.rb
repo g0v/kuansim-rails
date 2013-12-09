@@ -38,6 +38,11 @@ issue2 = Issue.create(
   description: "The Bay Area Rapid Transit strike of 2013."
 )
 
+issue3 = Issue.create(
+  title: "Syrian Civil War",
+  description: "An ongoing armed conflict in Syria between forces loyal to the Ba'ath government and those seeking to oust it."
+)
+
 ######END ISSUES######
 
 ######EVENTS######
@@ -80,7 +85,12 @@ user2.events << event1
 user3.events << event2
 
 #event-issue relations#
-issue1.events << event1
-issue2.events << event2
+event1.issues << issue1
+event1.issues << issue3
+event2.issues << issue2
+
+# issue1.events << event1
+# issue2.events << event2
+# issue3.events << event1
 
 ######END RELATIONS######
