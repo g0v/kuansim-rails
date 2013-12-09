@@ -103,4 +103,11 @@ describe UsersController do
       response.body.should have_content "true"
     end
   end
+
+  describe "created_events" do
+    it 'should return events created by the given user' do
+      @user.events << FactoryGirl.create(:event)
+      response.body.should have_content "true"
+    end
+  end
 end
