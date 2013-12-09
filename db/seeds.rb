@@ -69,6 +69,12 @@ event2 = Event.create(
 user3.issues << issue1
 user1.issues << issue2
 
+#follow-issue relations#
+user1.followed_issues << issue1
+user1.followed_issues << issue2
+user2.followed_issues << issue1
+user3.followed_issues << issue2
+
 #user-event relations#
 user2.events << event1
 user3.events << event2
