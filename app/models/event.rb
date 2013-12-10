@@ -26,7 +26,10 @@ class Event < ActiveRecord::Base
       :date_happened => self.date_happened,
       :location      => self.location,
       :description   => self.description,
-      :url           => self.url
+      :url           => self.url,
+      :ogTitle       => self.ogTitle,
+      :ogDescription => self.ogDescription,
+      :ogImage       => self.ogImage
     }
   end
 
@@ -40,14 +43,14 @@ class Event < ActiveRecord::Base
 
   def set_og_tags
     url = self.url
-    if (url)
+    if (!url.nil?)
       og = OpenGraph.new(url)
       og_tags = {
-        ogTitle: og.title,
-        ogDescription: og.description,
-        ogImage: og.images.first
+        :ogTitle => og.title,
+        :ogDescription => og.description,
+        :ogImage => og.images.first
       }
-      self.update_attributes(og_tags)
+      self.update_attributes(:ogTitle => og.title, :ogDescription => og.description, :ogImage => og.images.first)
     end
   end
 end
