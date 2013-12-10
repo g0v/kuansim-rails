@@ -85,30 +85,6 @@ describe IssuesController do
     end
   end
 
-  describe "related issues" do
-
-    before :each do
-      [@bart_event, @malaysia_event].each do |event|
-        event.issues << @bart
-        event.issues << @malaysia
-      end
-      @drink_event.issues << @drinking
-      [@bart_event, @drink_event, @malaysia_event].each {|event| event.save }
-    end
-
-    it "should be successfully found and displayed" do
-      get :related, {id: @bart.id}
-      response.body.should have_content "Strike in Malaysia"
-      response.body.should_not have_content "College Drinking"
-    end
-
-    it "should not display issues that have 0 events in common" do
-      get :related, {id: @drinking}
-      response.body.should have_content "\"related\":[]"
-    end
-
-  end
-
   describe "popular" do
 
     before :each do

@@ -22,4 +22,34 @@ class Issue < ActiveRecord::Base
     }
   end
 
+  # Return up to 5 "related" issues
+  # For now is suppperrrr slow but w/e xD
+  def related_issues
+    # issue = Issue.includes(:events).find(params[:id])
+    # other_issues = Issue.includes(:events).where('id != ?', params[:id])
+    issue = self
+    other_issues = Issue.includes(:events).where('id != ?', self.id)
+    issue_counts = Hash.new(0)
+    other_issues.each do |other_issue|
+      other_issue.events.each do |event|
+        if issue.events.include?(event)
+          issue_counts[other_issue] += 1
+        end
+      end
+    end
+
+    # Gets related issues by seeing which issues have the most events
+    # in common
+    related_issues = issue_counts.select{|k, v| v > 0 }.
+      sort_by {|k, v| v}.
+      reverse[0..4].
+      map {|k, v| k.to_json}
+    
+    related_issues  
+    # render json: {
+    #   success: true,
+    #   related: related_issues
+    # }
+  end
+
 end

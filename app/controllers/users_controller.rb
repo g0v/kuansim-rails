@@ -82,6 +82,20 @@ class UsersController < ApplicationController
     }
   end
 
+  def recommended
+    # user = current_user
+    recommended_counts = Hash.new(0)
+    current_user.followed_issues.each do |issue|
+      issue.related_issues.each do |related|
+        recommended_counts[related] += 1
+      end
+    end
+    render json: {
+      success: true,
+      recommended_issues: recommended_counts.keys
+    }
+  end
+
   def destroy_session
     if user_signed_in?
       sign_out current_user

@@ -100,4 +100,11 @@ ActiveRecord::Schema.define(:version => 20131210021605) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
+  create_table "users_issues", :id => false, :force => true do |t|
+    t.integer "user_id"
+    t.integer "issue_id"
+  end
+
+  add_index "users_issues", ["user_id", "issue_id"], :name => "index_users_issues_on_user_id_and_issue_id"
+
 end
