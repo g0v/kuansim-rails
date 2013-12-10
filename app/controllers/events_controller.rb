@@ -69,7 +69,6 @@ class EventsController < ApplicationController
     event = Event.find(params[:id])
     event_json = event.as_json
     event_json[:issues] = event.issues_titles_list
-    event_json[:og] = event.og_tags
     render json: {
       success: true,
       event: event_json
@@ -91,7 +90,6 @@ class EventsController < ApplicationController
       success: true,
       events: event_list.map do |e|
         event = e.as_json
-        event[:og] = e.og_tags
         event
       end
     }

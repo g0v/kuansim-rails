@@ -116,7 +116,6 @@ class UsersController < ApplicationController
     else
       events = user.events.map do |e|
         event = e.as_json
-        event[:og] = e.og_tags
         event
       end
     end
