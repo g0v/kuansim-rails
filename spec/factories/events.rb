@@ -12,7 +12,7 @@ FactoryGirl.define do
     location 'San Francisco, CA'
     description "This is a horrible event!"
     date_happened 1234567
-    url 'http://www.bbc.com'
+    url 'http://www.usatoday.com/story/news/nation/2013/10/20/bart-strike-san-francisco-monday/3096849/'
   end
 
   factory :freshmen_drink, :class => Event do

@@ -65,6 +65,7 @@ Kuansim::Application.routes.draw do
   get '/users/issues/:id/follows', to: 'users#follows_issue?'
   get '/users/:id/events', to: 'users#created_events'
   get '/users/:id/issues', to: 'users#followed_issues'
+  get '/users/issues/recommended', to: 'users#recommended'
   post '/users/issues/unfollow', to: 'users#unfollow_issue'
 
   ############################# ISSUE #############################
@@ -74,7 +75,7 @@ Kuansim::Application.routes.draw do
   post  '/collections/issues',  to: 'issues#create'
   put   '/collections/issues/:id', to: 'issues#update'
   delete  '/collections/issues/:id', to: 'issues#destroy'
-  get '/collections/issues/:id/related', to: 'issues#related'
+  # get '/collections/issues/:id/related', to: 'issues#related'
   ############################# ISSUE #############################
 
   get   '/collections/bookmarks/:id', to: 'events#show'

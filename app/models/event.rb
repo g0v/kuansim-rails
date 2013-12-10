@@ -45,11 +45,6 @@ class Event < ActiveRecord::Base
     url = self.url
     if (!url.nil?)
       og = OpenGraph.new(url)
-      og_tags = {
-        :ogTitle => og.title,
-        :ogDescription => og.description,
-        :ogImage => og.images.first
-      }
       self.update_attributes(:ogTitle => og.title, :ogDescription => og.description, :ogImage => og.images.first)
     end
   end
