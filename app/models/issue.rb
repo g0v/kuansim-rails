@@ -45,7 +45,7 @@ class Issue < ActiveRecord::Base
       reverse[0..4].
       map {|k, v| k.to_json}
     
-    related_issues  
+    related_issues
     # render json: {
     #   success: true,
     #   related: related_issues
