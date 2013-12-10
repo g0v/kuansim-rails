@@ -18,25 +18,25 @@ describe Issue do
 
     before :each do
     	@bart = FactoryGirl.create(:bart_strike_issue)
-    	@bart_event = FactoryGirl.create(:bart_event)
+    	@bart_event = FactoryGirl.build(:bart_event)
     	@malaysia = FactoryGirl.create(:malaysia_strike_issue)
-    	@malaysia_event = FactoryGirl.create(:malaysia_event)
+    	@malaysia_event = FactoryGirl.build(:malaysia_event)
       [@bart_event, @malaysia_event].each do |event|
         event.issues << @bart
         event.issues << @malaysia
       end
       @drinking = FactoryGirl.create(:drinking_issue)
-      @drinking_event = FactoryGirl.create(:freshmen_drink)
+      @drink_event = FactoryGirl.build(:freshmen_drink)
       @drink_event.issues << @drinking
       [@bart_event, @drink_event, @malaysia_event].each {|event| event.save }
     end
 
     it "should be successfully found and displayed" do
-      @bart.related_issues.should_return [@malaysia]
+      @bart.related_issues.should == [@malaysia.to_json]
     end
 
     it "should not display issues that have 0 events in common" do
-      @drinking.related_issues.should_return []
+      @drinking.related_issues.should == []
     end
 
   end
