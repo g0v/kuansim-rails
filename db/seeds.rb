@@ -23,7 +23,8 @@ user3 = User.create(
   name: "Nicholas Brody"
 )
 
-User.create!(name: "Andrew Chen",
+user4 = User.create!(
+        name: "Andrew Chen",
         provider: "Facebook",
         uid: "1",
         email: "aychen92@gmail.com",
@@ -88,7 +89,7 @@ user2.followed_issues << issue1
 user3.followed_issues << issue2
 
 #user-event relations#
-user2.events << event1
+user4.events << event1
 user3.events << event2
 
 #event-issue relations#
