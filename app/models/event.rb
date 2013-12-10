@@ -13,10 +13,13 @@ class Event < ActiveRecord::Base
   validates :url, presence: true
 
   before_create :parse_date
+  before_save :parse_date
   after_create :set_og_tags
 
   def parse_date
-    self.date_happened = Time.at((self.date_happened.to_f / 1000.0).to_i).to_datetime
+    if !(self.date_happened.is_a? Time)
+      self.date_happened = Time.at((self.date_happened.to_f / 1000.0).to_i).to_datetime
+    end
   end
 
   def as_json(options = {})
