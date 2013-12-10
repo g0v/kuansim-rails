@@ -83,7 +83,6 @@ class UsersController < ApplicationController
   end
 
   def recommended
-    # user = current_user
     recommended_counts = Hash.new(0)
     current_user.followed_issues.each do |issue|
       issue.related_issues.each do |related|

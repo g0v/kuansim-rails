@@ -25,8 +25,6 @@ class Issue < ActiveRecord::Base
   # Return up to 5 "related" issues
   # For now is suppperrrr slow but w/e xD
   def related_issues
-    # issue = Issue.includes(:events).find(params[:id])
-    # other_issues = Issue.includes(:events).where('id != ?', params[:id])
     issue = self
     other_issues = Issue.includes(:events).where('id != ?', self.id)
     issue_counts = Hash.new(0)
@@ -46,10 +44,6 @@ class Issue < ActiveRecord::Base
       map {|k, v| k.to_hash}
     
     related_issues
-    # render json: {
-    #   success: true,
-    #   related: related_issues
-    # }
   end
 
 end
