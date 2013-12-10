@@ -22,10 +22,10 @@ ActiveRecord::Schema.define(:version => 20131210021605) do
     t.datetime "updated_at",    :null => false
     t.integer  "user_id"
     t.integer  "issue_id"
-    t.string   "url"
-    t.string   "ogTitle"
-    t.string   "ogDescription"
-    t.string   "ogImage"
+    t.text     "url"
+    t.text     "ogTitle"
+    t.text     "ogDescription"
+    t.text     "ogImage"
   end
 
   create_table "events_issues", :force => true do |t|
