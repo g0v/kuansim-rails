@@ -43,7 +43,7 @@ class Issue < ActiveRecord::Base
     related_issues = issue_counts.select{|k, v| v > 0 }.
       sort_by {|k, v| v}.
       reverse[0..4].
-      map {|k, v| k.to_json}
+      map {|k, v| k.to_hash}
     
     related_issues
     # render json: {
