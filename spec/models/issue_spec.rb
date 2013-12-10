@@ -32,7 +32,7 @@ describe Issue do
     end
 
     it "should be successfully found and displayed" do
-      @bart.related_issues.should == [@malaysia.to_json]
+      @bart.related_issues.first[:title].should == @malaysia.title
     end
 
     it "should not display issues that have 0 events in common" do
