@@ -3,7 +3,7 @@ require 'opengraph_parser'
 
 class Event < ActiveRecord::Base
 
-  attr_accessible :date_happened, :description, :location, :title, :issue_id, :user_id, :url
+  attr_accessible :date_happened, :description, :location, :title, :issue_id, :user_id, :url, :ogTitle, :ogDescription, :ogImage
   belongs_to :user
 
   has_many :events_issues
@@ -13,6 +13,7 @@ class Event < ActiveRecord::Base
   validates :url, presence: true
 
   before_create :parse_date
+  after_create :set_og_tags
 
   def parse_date
     self.date_happened = Time.at((self.date_happened.to_f / 1000.0).to_i).to_datetime
@@ -37,16 +38,16 @@ class Event < ActiveRecord::Base
     return issue_title_list
   end
 
-  def og_tags
+  def set_og_tags
     url = self.url
     if (url)
       og = OpenGraph.new(url)
       og_tags = {
-        title: og.title,
-        description: og.description,
-        images: og.images
+        ogTitle: og.title,
+        ogDescription: og.description,
+        ogImage: og.images.first
       }
+      self.update_attributes(og_tags)
     end
-    return og_tags
   end
 end
