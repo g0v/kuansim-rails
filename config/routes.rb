@@ -63,7 +63,7 @@ Kuansim::Application.routes.draw do
   get  '/users/sign_out', to: 'users#destroy_session'
   post '/users/issues/follow', to: 'users#follow_issue'
   get '/users/issues/:id/follows', to: 'users#follows_issue?'
-  get '/users/:id/issue/:issue_id/events', to: 'users#get_user_events_by_issue'
+  get '/users/:id/events', to: 'users#created_events'
   get '/users/:id/issues', to: 'users#followed_issues'
   get '/users/issues/recommended', to: 'users#recommended'
   post '/users/issues/unfollow', to: 'users#unfollow_issue'
